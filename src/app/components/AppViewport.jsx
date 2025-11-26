@@ -5,7 +5,7 @@ export default function AppViewport({ children }) {
         mx-auto
         max-w-[560px]
         w-full
-        h-dvh
+        h-screen
         overflow-hidden
         bg-black
         relative
