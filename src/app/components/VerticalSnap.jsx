@@ -13,10 +13,10 @@ export default function VerticalSnap({ children }) {
   return (
     <div
       ref={ref}
-      className="h-screen w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+      className="h-full w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
     >
       {children.map((child, i) => (
-        <div key={i} className="snap-start h-screen">
+        <div key={i} className="snap-start h-full">
           {child}
         </div>
       ))}

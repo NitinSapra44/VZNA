@@ -5,7 +5,7 @@ export default function MenuTile({ item, index }) {
   const { openProduct } = useAppStore();
 
   return (
-    <div className="relative h-screen w-full snap-center">
+    <div className="relative h-full w-full snap-center">
       {/* Background Image */}
       <img
         src={item.image_url}

@@ -44,7 +44,7 @@ export default function LanguageScreen() {
 
   return (
     <AppViewport>
-      <div className="flex flex-col items-center justify-center h-screen gap-8 bg-[#DBDBDB]">
+      <div className="flex flex-col items-center justify-center h-full gap-8 bg-[#DBDBDB]">
         <div className="bg-white h-[95%] w-[90%] rounded-3xl flex flex-col items-center justify-center gap-6">
 
           <h2 className="text-xl font-semibold text-gray-600">Sprache wählen</h2>
