@@ -20,7 +20,7 @@ export default function MenuTile({ item, index, language, onOpenProduct }) {
         <img 
           src="/logo.svg"
           alt="Restaurant Logo" 
-          className="h-24 w-auto drop-shadow-lg"
+          className="h-14 w-auto drop-shadow-lg"
         />
       </div>
       
