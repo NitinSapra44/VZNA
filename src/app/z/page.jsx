@@ -18,11 +18,14 @@ export default function LanguageScreen() {
     if (isNavigating.current) return;
     
     const now = Date.now();
-    if (now - lastScrollTime.current < 800) return; // Debounce: prevent multiple triggers
+    if (now - lastScrollTime.current < 800) return;
     
     lastScrollTime.current = now;
     isNavigating.current = true;
-    router.push(`/z/${language}`);
+    
+    // Get the current language directly from store
+    const currentLanguage = useAppStore.getState().language;
+    router.push(`/z/${currentLanguage}`);
   };
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function LanguageScreen() {
       event.preventDefault();
       
       const now = Date.now();
-      if (now - lastScrollTime.current < 800) return; // Debounce scroll events
+      if (now - lastScrollTime.current < 800) return;
       
       if (event.deltaY > 30) {
         navigateToMenu();
@@ -61,10 +64,10 @@ export default function LanguageScreen() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [language]);
+  }, []);
 
   return (
-    <AppViewport>
+     <AppViewport>
       <div className="flex flex-col items-center justify-center h-full gap-8 bg-[#DBDBDB]">
         <div className="bg-white h-[95%] w-[90%] rounded-3xl flex flex-col items-center justify-center gap-6">
           <h2 className="text-xl font-semibold text-gray-600">Sprache wählen</h2>

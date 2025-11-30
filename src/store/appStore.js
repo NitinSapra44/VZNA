@@ -1,14 +1,12 @@
 import { create } from "zustand";
 
 export const useAppStore = create(set => ({
-  mode: "all", // all | category | product
+  mode: "all",
   category: null,
   productIndex: 0,
-
   setMode: mode => set({ mode }),
   selectCategory: category => set({ mode: "category", category }),
   openProduct: index => set({ mode: "product", productIndex: index }),
-
   scrollRef: null,
   setScrollRef: ref => set({ scrollRef: ref }),
   scrollTo: index =>
@@ -21,12 +19,9 @@ export const useAppStore = create(set => ({
       }
       return {};
     }),
-
-  /** ------------------- NEW LANGUAGE STATE ------------------- **/
-  language: typeof window !== "undefined" 
-    ? localStorage.getItem("app-lang") || "en"
-    : "en",
-
+  
+  language: "en", // Default to "en", will be updated on mount
+  
   setLanguage: lang =>
     set(() => {
       if (typeof window !== "undefined") {
@@ -35,3 +30,11 @@ export const useAppStore = create(set => ({
       return { language: lang };
     }),
 }));
+
+// Initialize language from localStorage after mount
+if (typeof window !== "undefined") {
+  const savedLang = localStorage.getItem("app-lang");
+  if (savedLang) {
+    useAppStore.setState({ language: savedLang });
+  }
+}
