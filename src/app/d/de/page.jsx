@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import AppViewport from "@/app/components/AppViewport";
 import VerticalSnap from "@/app/components/VerticalSnap";
 import MenuTile from "@/app/components/MenuTile";
@@ -32,13 +32,15 @@ function sortItems(a, b) {
 export default function MenuPage() {
   const lang = "de";  
 
+  const verticalSnapRef = useRef(null);   // ✅ IMPORTANT
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [currentItems, setCurrentItems] = useState([]);
 
-  // Track if drawer is open (to disable VerticalSnap)
+  // Track if drawer is open → disable VerticalSnap scroll
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const categories = [...menuData.categories].sort(
@@ -125,7 +127,7 @@ export default function MenuPage() {
 
         {/* Items View */}
         {currentItems.length > 0 ? (
-          <VerticalSnap isDrawerOpen={drawerOpen}>
+          <VerticalSnap ref={verticalSnapRef} isDrawerOpen={drawerOpen}>
             {currentItems.map((item, index) => (
               <MenuTile
                 key={item.id}
@@ -133,6 +135,7 @@ export default function MenuPage() {
                 index={index}
                 language={lang}
                 onDrawerToggle={setDrawerOpen}
+                verticalSnapRef={verticalSnapRef}   // ✅ SEND REF HERE
               />
             ))}
           </VerticalSnap>
