@@ -1,24 +1,27 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 // Mock store for demo - replace with your actual store
 const useAppStore = (selector) => {
-  const [scrollRef, setScrollRef] = useState(null);
+  const [scrollRef, setScrollRef] = (function () {
+    // tiny mock hook for demo only
+    let ref = null;
+    return [ref, (v) => (ref = v)];
+  })();
   return selector({ setScrollRef });
 };
 
 export default function VerticalSnap({ children }) {
   const ref = useRef(null);
   const setScrollRef = useAppStore((state) => state.setScrollRef);
-  const isScrolling = useRef(false);
+  const isScrolling = useRef(false); // lock while animating
   const scrollTimeout = useRef(null);
   const touchStartY = useRef(0);
   const currentPage = useRef(0);
-  const wheelAccumulator = useRef(0);
-  const wheelTimeout = useRef(null);
+  const lastWheelAt = useRef(0);
 
   useEffect(() => {
-    setScrollRef(ref.current);
+    setScrollRef && setScrollRef(ref.current);
   }, [setScrollRef]);
 
   useEffect(() => {
@@ -26,72 +29,80 @@ export default function VerticalSnap({ children }) {
     if (!container) return;
 
     const pageHeight = () => window.innerHeight;
+    const maxPage = Math.max(0, children.length - 1);
 
+    // call to scroll to page index, clamps and sets lock
     const scrollToPage = (pageIndex) => {
-      if (pageIndex < 0 || pageIndex >= children.length) return;
+      const target = Math.max(0, Math.min(maxPage, pageIndex));
+      if (target === currentPage.current) {
+        // still align perfectly
+        container.scrollTo({ top: target * pageHeight(), behavior: "smooth" });
+        return;
+      }
 
+      currentPage.current = target;
       isScrolling.current = true;
-      currentPage.current = pageIndex;
 
       container.scrollTo({
-        top: pageIndex * pageHeight(),
+        top: target * pageHeight(),
         behavior: "smooth",
       });
 
+      // Keep lock slightly longer than CSS smoothness to avoid interruption.
       clearTimeout(scrollTimeout.current);
       scrollTimeout.current = setTimeout(() => {
         isScrolling.current = false;
-      }, 700);
+      }, 600); // tweak this (ms) for your preferred lock duration
     };
 
-    // Wheel event handler
+    // Initialize currentPage from current scroll position (useful on refresh)
+    const initPageFromScroll = () => {
+      const nearest = Math.round(container.scrollTop / pageHeight());
+      currentPage.current = Math.max(0, Math.min(maxPage, nearest));
+      // snap immediately (no animation) to avoid fractional positions
+      container.scrollTo({ top: currentPage.current * pageHeight(), behavior: "auto" });
+    };
+    initPageFromScroll();
+
+    // Wheel handler: use direction + short throttle
     const handleWheel = (e) => {
+      // Prevent default so native scroll doesn't fight us
       e.preventDefault();
+
+      // If locked, ignore
       if (isScrolling.current) return;
 
-      // Accumulate wheel delta
-      wheelAccumulator.current += e.deltaY;
+      const now = Date.now();
+      const throttleMs = 200; // disallow repeated wheel actions within this window
+      if (now - lastWheelAt.current < throttleMs) {
+        return;
+      }
+      lastWheelAt.current = now;
 
-      // Clear previous timeout
-      clearTimeout(wheelTimeout.current);
+      const deltaY = e.deltaY;
+      if (Math.abs(deltaY) < 5) return; // tiny wheel movement ignore
 
-      // Set timeout to trigger scroll
-      wheelTimeout.current = setTimeout(() => {
-        if (Math.abs(wheelAccumulator.current) > 60) { // Adjusted threshold
-          const direction = wheelAccumulator.current > 0 ? 1 : -1;
-          const targetPage = currentPage.current + direction;
-          wheelAccumulator.current = 0;
-
-          scrollToPage(targetPage);
-        } else {
-          wheelAccumulator.current = 0;
-        }
-      }, 100); // Adjusted timeout
+      const direction = deltaY > 0 ? 1 : -1;
+      scrollToPage(currentPage.current + direction);
     };
 
-    // Touch event handlers
+    // touch handlers (kept mostly as you had)
     const handleTouchStart = (e) => {
       const target = e.target;
-      const isInteractive = target.closest(
-        "button, a, input, textarea, select, [role='button']"
-      );
-
+      const isInteractive = target.closest &&
+        target.closest("button, a, input, textarea, select, [role='button']");
       if (isInteractive) return;
-
       touchStartY.current = e.touches[0].clientY;
     };
 
     const handleTouchEnd = (e) => {
       const target = e.target;
-      const isInteractive = target.closest(
-        "button, a, input, textarea, select, [role='button']"
-      );
-
+      const isInteractive = target.closest &&
+        target.closest("button, a, input, textarea, select, [role='button']");
       if (isInteractive || touchStartY.current === 0) {
         touchStartY.current = 0;
         return;
       }
-
       if (isScrolling.current) {
         touchStartY.current = 0;
         return;
@@ -99,15 +110,13 @@ export default function VerticalSnap({ children }) {
 
       const touchEndY = e.changedTouches[0].clientY;
       const diff = touchStartY.current - touchEndY;
-      const threshold = 100; // Increased threshold to prevent accidental scrolls
+      const threshold = 80; // swipe threshold (tweak as desired)
 
-      // Handle swipe direction
       if (Math.abs(diff) > threshold) {
-        const direction = diff > 0 ? 1 : -1; // Swipe up = +1, Swipe down = -1
-        const targetPage = currentPage.current + direction;
-
-        scrollToPage(targetPage);
+        const direction = diff > 0 ? 1 : -1;
+        scrollToPage(currentPage.current + direction);
       } else {
+        // small swipe -> snap back to current
         scrollToPage(currentPage.current);
       }
       touchStartY.current = 0;
@@ -115,39 +124,35 @@ export default function VerticalSnap({ children }) {
 
     const handleTouchMove = (e) => {
       const target = e.target;
-      const isInteractive = target.closest(
-        "button, a, input, textarea, select, [role='button']"
-      );
-
+      const isInteractive = target.closest &&
+        target.closest("button, a, input, textarea, select, [role='button']");
       if (isInteractive || touchStartY.current === 0) return;
-
-      e.preventDefault(); // Prevent rubber-band effect
+      // prevent rubber-band on iOS
+      e.preventDefault();
     };
 
-    // Manual scroll syncing
+    // sync on manual scroll (e.g., keyboard or programmatic)
     const handleScroll = () => {
       if (isScrolling.current) return;
-
+      // debounce to avoid too many recalcs
       clearTimeout(scrollTimeout.current);
       scrollTimeout.current = setTimeout(() => {
         const scrollTop = container.scrollTop;
-        const nearestPage = Math.round(scrollTop / pageHeight());
-
-        if (nearestPage !== currentPage.current) {
-          scrollToPage(nearestPage);
+        const nearest = Math.round(scrollTop / pageHeight());
+        if (nearest !== currentPage.current) {
+          scrollToPage(nearest);
         }
-      }, 150); // Adjusted delay
+      }, 120);
     };
 
-    // Add event listeners
     container.addEventListener("wheel", handleWheel, { passive: false });
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
     container.addEventListener("touchmove", handleTouchMove, { passive: false });
     container.addEventListener("touchend", handleTouchEnd, { passive: true });
     container.addEventListener("scroll", handleScroll, { passive: true });
 
+    // cleanup
     return () => {
-      // Remove event listeners
       container.removeEventListener("wheel", handleWheel);
       container.removeEventListener("touchstart", handleTouchStart);
       container.removeEventListener("touchmove", handleTouchMove);
@@ -155,7 +160,6 @@ export default function VerticalSnap({ children }) {
       container.removeEventListener("scroll", handleScroll);
 
       clearTimeout(scrollTimeout.current);
-      clearTimeout(wheelTimeout.current);
     };
   }, [children.length]);
 
@@ -168,10 +172,20 @@ export default function VerticalSnap({ children }) {
         WebkitOverflowScrolling: "touch",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
+        // Optional: enable CSS scroll-snap for even stronger native snapping.
+        // Uncomment to try CSS snapping — it's often smoother and more reliable.
+        // scrollSnapType: "y mandatory",
       }}
     >
       {children.map((child, i) => (
-        <div key={i} className="h-full w-full flex-shrink-0">
+        <div
+          key={i}
+          className="h-full w-full flex-shrink-0"
+          style={{
+            // If you enable scroll-snap on container, enable this on items:
+            // scrollSnapAlign: "start",
+          }}
+        >
           {child}
         </div>
       ))}
