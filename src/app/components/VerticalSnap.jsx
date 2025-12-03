@@ -3,76 +3,80 @@ import { useEffect, useRef } from "react";
 
 export default function VerticalSnap({ children }) {
   const ref = useRef(null);
-  const isScrolling = useRef(false);
-  const lastScrollTime = useRef(0);
+  const isLocked = useRef(false);
   const currentPage = useRef(0);
-  const touchStartY = useRef(0);
 
   useEffect(() => {
     const container = ref.current;
     if (!container) return;
 
     const PAGE_COUNT = children.length;
-    const SNAP_DELAY = 700; 
-    const THRESHOLD = 40;   
+    const THRESHOLD = 40;
 
-    /* ----------------------- WHEEL (Desktop) ----------------------- */
+    /* -----------------------------------------
+       SCROLL END → unlock ONLY when animation ends
+    ------------------------------------------- */
+    const unlockScroll = () => {
+      isLocked.current = false;
+    };
+
+    container.addEventListener("scrollend", unlockScroll);
+
+    /* -----------------------------------------
+       WHEEL (Desktop)
+    ------------------------------------------- */
     const handleWheel = (e) => {
       e.preventDefault();
 
-      const now = Date.now();
-      if (isScrolling.current || now - lastScrollTime.current < SNAP_DELAY) return;
+      if (isLocked.current) return;
 
       const direction = e.deltaY > 0 ? 1 : -1;
-      const nextPage = currentPage.current + direction;
+      const next = currentPage.current + direction;
 
-      if (nextPage < 0 || nextPage >= PAGE_COUNT) return;
+      if (next < 0 || next >= PAGE_COUNT) return;
 
-      isScrolling.current = true;
-      lastScrollTime.current = now;
-      currentPage.current = nextPage;
+      isLocked.current = true;
+      currentPage.current = next;
 
       container.scrollTo({
         top: window.innerHeight * currentPage.current,
         behavior: "smooth",
       });
-
-      setTimeout(() => (isScrolling.current = false), SNAP_DELAY);
     };
 
-    /* ----------------------- TOUCH (Mobile) ----------------------- */
+    /* -----------------------------------------
+       TOUCH (Mobile)
+    ------------------------------------------- */
+    let startY = 0;
+
     const handleTouchStart = (e) => {
-      const isInteractive = e.target.closest(
+      const interactive = e.target.closest(
         "button, a, input, textarea, select, [role='button']"
       );
-      if (isInteractive) return;
+      if (interactive) return;
 
-      touchStartY.current = e.touches[0].clientY;
+      startY = e.touches[0].clientY;
     };
 
     const handleTouchEnd = (e) => {
-      const isInteractive = e.target.closest(
-        "button, a, input, textarea, select, [role='button']"
-      );
-      if (isInteractive) return;
+      if (isLocked.current) return;
 
       const endY = e.changedTouches[0].clientY;
-      const diff = touchStartY.current - endY;
+      const diff = startY - endY;
 
       if (Math.abs(diff) < THRESHOLD) {
+        // Snap back
         container.scrollTo({
           top: window.innerHeight * currentPage.current,
           behavior: "smooth",
         });
         return;
       }
-
-      if (isScrolling.current) return;
 
       const direction = diff > 0 ? 1 : -1;
-      const nextPage = currentPage.current + direction;
+      const next = currentPage.current + direction;
 
-      if (nextPage < 0 || nextPage >= PAGE_COUNT) {
+      if (next < 0 || next >= PAGE_COUNT) {
         container.scrollTo({
           top: window.innerHeight * currentPage.current,
           behavior: "smooth",
@@ -80,18 +84,18 @@ export default function VerticalSnap({ children }) {
         return;
       }
 
-      isScrolling.current = true;
-      lastScrollTime.current = Date.now();
-      currentPage.current = nextPage;
+      isLocked.current = true;
+      currentPage.current = next;
 
       container.scrollTo({
         top: window.innerHeight * currentPage.current,
         behavior: "smooth",
       });
-
-      setTimeout(() => (isScrolling.current = false), SNAP_DELAY);
     };
 
+    /* -----------------------------------------
+       LISTENERS
+    ------------------------------------------- */
     container.addEventListener("wheel", handleWheel, { passive: false });
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
     container.addEventListener("touchend", handleTouchEnd, { passive: false });
@@ -100,6 +104,7 @@ export default function VerticalSnap({ children }) {
       container.removeEventListener("wheel", handleWheel);
       container.removeEventListener("touchstart", handleTouchStart);
       container.removeEventListener("touchend", handleTouchEnd);
+      container.removeEventListener("scrollend", unlockScroll);
     };
   }, [children.length]);
 
