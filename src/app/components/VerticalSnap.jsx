@@ -6,6 +6,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   const pageIndex = useRef(0);
   const scrollLocked = useRef(false);
   const touchStartY = useRef(0);
+  const isTouching = useRef(false);
 
   const PAGE_COUNT = children.length;
   const PAGE_HEIGHT = () => window.innerHeight;
@@ -80,22 +81,36 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     /* ---------------- MOBILE SWIPE ---------------- */
     const handleTouchStart = (e) => {
       if (isDrawerOpen) return;
+      if (scrollLocked.current) return;
+      
+      isTouching.current = true;
       touchStartY.current = e.touches[0].clientY;
     };
 
     const handleTouchMove = (e) => {
-      if (scrollLocked.current || isDrawerOpen) e.preventDefault();
+      if (isDrawerOpen) return;
+      // Allow natural scrolling during touch - don't prevent default
+      // unless we're locked from a previous animation
+      if (scrollLocked.current) {
+        e.preventDefault();
+      }
     };
 
     const handleTouchEnd = (e) => {
-      if (isDrawerOpen || scrollLocked.current) return;
+      if (isDrawerOpen) return;
+      isTouching.current = false;
+      
+      if (scrollLocked.current) return;
 
       const diff = touchStartY.current - e.changedTouches[0].clientY;
+      
+      // If swipe is too small, snap back to current page
       if (Math.abs(diff) < 30) {
-        scrollToPage(pageIndex.current);
+        scrollToPage(pageIndex.current, false);
         return;
       }
 
+      // Determine direction and next page
       const direction = diff > 0 ? 1 : -1;
       let next = pageIndex.current + direction;
 
@@ -110,6 +125,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     const handleScroll = () => {
       if (isDrawerOpen) return;
       if (scrollLocked.current) return;
+      if (isTouching.current) return; // Don't interfere during active touch
 
       // Clear previous timeout to debounce
       if (scrollTimeout) clearTimeout(scrollTimeout);
@@ -118,7 +134,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         const target = pageIndex.current * PAGE_HEIGHT();
         const diff = Math.abs(container.scrollTop - target);
 
-        // Only correct if significantly off (reduced from 25 to 50)
+        // Only correct if significantly off
         if (diff > 50) {
           container.scrollTo({ top: target, behavior: "instant" });
         }
@@ -152,9 +168,6 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
         WebkitOverflowScrolling: "touch",
-        scrollBehavior: "smooth",
-        // Faster, snappier scroll animation like TikTok
-        transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       }}
     >
       {children.map((child, i) => (
