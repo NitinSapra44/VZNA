@@ -3,45 +3,45 @@ import { useEffect, useRef } from "react";
 
 export default function VerticalSnap({ children }) {
   const containerRef = useRef(null);
-
-  // TRUE page index — never rely on scrollTop
   const pageIndex = useRef(0);
-
-  // Lock while animation is in progress
   const scrollLocked = useRef(false);
-
-  // For touch detection
   const touchStartY = useRef(0);
+  const scrollTimeout = useRef(null);
 
   const PAGE_COUNT = children.length;
-  const PAGE_HEIGHT = () => window.innerHeight; // correct at all times
+  const PAGE_HEIGHT = () => window.innerHeight;
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    /* --------------------------------------------
-       HARD-LOCK SCROLLING (Like TikTok)
-       One scroll → one snap → never skip
-    --------------------------------------------- */
-
     const scrollToPage = (index) => {
+      if (scrollLocked.current) return;
+      
       scrollLocked.current = true;
+      pageIndex.current = index;
 
       container.scrollTo({
         top: index * PAGE_HEIGHT(),
         behavior: "smooth",
       });
+
+      // Fallback unlock in case scrollend doesn't fire
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      scrollTimeout.current = setTimeout(() => {
+        scrollLocked.current = false;
+      }, 600);
     };
 
-    /* --------------------------------------------
-       Unlock strictly after smooth scrolling ends
-       (scrollend works on Safari + Chrome)
-    --------------------------------------------- */
     const handleScrollEnd = () => {
       scrollLocked.current = false;
+      
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = null;
+      }
 
-      // Correct any micro drift instantly
+      // Snap correction
       const target = pageIndex.current * PAGE_HEIGHT();
       const diff = Math.abs(container.scrollTop - target);
 
@@ -52,26 +52,37 @@ export default function VerticalSnap({ children }) {
 
     container.addEventListener("scrollend", handleScrollEnd);
 
-    /* --------------------------------------------
-       Desktop wheel scroll
-    --------------------------------------------- */
+    /* DESKTOP WHEEL - Queue scrolls instead of ignoring */
+    let wheelTimeout = null;
     const handleWheel = (e) => {
-      e.preventDefault(); // FULL control
+      e.preventDefault();
 
-      if (scrollLocked.current) return;
+      // Clear any pending wheel events
+      if (wheelTimeout) clearTimeout(wheelTimeout);
 
-      const direction = e.deltaY > 0 ? 1 : -1;
+      // If locked, queue the scroll for after unlock
+      if (scrollLocked.current) {
+        wheelTimeout = setTimeout(() => {
+          if (!scrollLocked.current) {
+            processWheelScroll(e.deltaY);
+          }
+        }, 50);
+        return;
+      }
+
+      processWheelScroll(e.deltaY);
+    };
+
+    const processWheelScroll = (deltaY) => {
+      const direction = deltaY > 0 ? 1 : -1;
       const next = pageIndex.current + direction;
 
       if (next < 0 || next >= PAGE_COUNT) return;
 
-      pageIndex.current = next;
       scrollToPage(next);
     };
 
-    /* --------------------------------------------
-       Mobile touch swipe
-    --------------------------------------------- */
+    /* MOBILE TOUCH */
     const handleTouchStart = (e) => {
       const isInteractive = e.target.closest(
         "button, a, input, textarea, select, [role='button']"
@@ -81,15 +92,21 @@ export default function VerticalSnap({ children }) {
       touchStartY.current = e.touches[0].clientY;
     };
 
+    const handleTouchMove = (e) => {
+      // Prevent scroll while locked
+      if (scrollLocked.current) {
+        e.preventDefault();
+      }
+    };
+
     const handleTouchEnd = (e) => {
       if (scrollLocked.current) return;
 
       const endY = e.changedTouches[0].clientY;
       const diff = touchStartY.current - endY;
 
-      // Swipe threshold
-      if (Math.abs(diff) < 40) {
-        // Snap back
+      // Minimum swipe threshold (increased for better control)
+      if (Math.abs(diff) < 50) {
         scrollToPage(pageIndex.current);
         return;
       }
@@ -102,27 +119,42 @@ export default function VerticalSnap({ children }) {
         return;
       }
 
-      pageIndex.current = next;
       scrollToPage(next);
     };
 
-    /* --------------------------------------------
-       LISTENERS
-    --------------------------------------------- */
+    // Prevent manual scrolling completely
+    const handleScroll = () => {
+      if (!scrollLocked.current) {
+        const target = pageIndex.current * PAGE_HEIGHT();
+        const current = container.scrollTop;
+        const diff = Math.abs(current - target);
+
+        // If user somehow scrolled manually, snap back
+        if (diff > 5) {
+          container.scrollTo({ top: target });
+        }
+      }
+    };
+
+    /* LISTENERS */
     container.addEventListener("wheel", handleWheel, { passive: false });
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
     container.addEventListener("touchend", handleTouchEnd, { passive: false });
+    container.addEventListener("scroll", handleScroll, { passive: true });
 
-    /* --------------------------------------------
-       INITIAL positioning (must be exact)
-    --------------------------------------------- */
-    container.scrollTo({ top: 0 });
+    // Initial position
+    container.scrollTo({ top: 0, behavior: "instant" });
 
     return () => {
       container.removeEventListener("wheel", handleWheel);
       container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
       container.removeEventListener("touchend", handleTouchEnd);
       container.removeEventListener("scrollend", handleScrollEnd);
+      container.removeEventListener("scroll", handleScroll);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      if (wheelTimeout) clearTimeout(wheelTimeout);
     };
   }, [PAGE_COUNT]);
 
