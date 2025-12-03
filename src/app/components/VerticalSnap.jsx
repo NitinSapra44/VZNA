@@ -55,7 +55,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       setTimeout(() => {
         scrollLocked.current = false;
-      }, 450);
+      }, 250);
     };
 
     /* ---------------- DESKTOP WHEEL ---------------- */
@@ -74,7 +74,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         if (next >= PAGE_COUNT) next = 0;
 
         scrollToPage(next);
-      }, 60);
+      }, 20);
     };
 
     /* ---------------- MOBILE SWIPE ---------------- */
@@ -91,7 +91,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       if (isDrawerOpen || scrollLocked.current) return;
 
       const diff = touchStartY.current - e.changedTouches[0].clientY;
-      if (Math.abs(diff) < 50) {
+      if (Math.abs(diff) < 30) {
         scrollToPage(pageIndex.current);
         return;
       }
@@ -105,17 +105,24 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       scrollToPage(next);
     };
 
-    /* ---------------- SCROLL FIX ---------------- */
+    /* ---------------- SCROLL FIX (REDUCED INTERFERENCE) ---------------- */
+    let scrollTimeout = null;
     const handleScroll = () => {
       if (isDrawerOpen) return;
       if (scrollLocked.current) return;
 
-      const target = pageIndex.current * PAGE_HEIGHT();
-      const diff = Math.abs(container.scrollTop - target);
+      // Clear previous timeout to debounce
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      
+      scrollTimeout = setTimeout(() => {
+        const target = pageIndex.current * PAGE_HEIGHT();
+        const diff = Math.abs(container.scrollTop - target);
 
-      if (diff > 25) {
-        container.scrollTo({ top: target, behavior: "instant" });
-      }
+        // Only correct if significantly off (reduced from 25 to 50)
+        if (diff > 50) {
+          container.scrollTo({ top: target, behavior: "instant" });
+        }
+      }, 100);
     };
 
     /* ---------------- EVENT LISTENERS ---------------- */
@@ -133,6 +140,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       container.removeEventListener("scroll", handleScroll);
 
       if (wheelTimeout) clearTimeout(wheelTimeout);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
     };
   }, [PAGE_COUNT, isDrawerOpen]);
 
@@ -144,6 +152,9 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
         WebkitOverflowScrolling: "touch",
+        scrollBehavior: "smooth",
+        // Faster, snappier scroll animation like TikTok
+        transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       }}
     >
       {children.map((child, i) => (

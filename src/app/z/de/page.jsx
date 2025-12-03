@@ -108,7 +108,7 @@ export default function MenuPage() {
             alt="Restaurant Logo" 
             className="h-16 w-auto drop-shadow-lg border-b-2 border-white pb-3"
           />
-          <p className="text-white text-xl">Dübendorf</p>
+          <p className="text-white text-xl">Zürich</p>
         </div>
 
         {/* Dropdown navigation */}
