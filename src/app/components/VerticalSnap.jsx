@@ -18,6 +18,10 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     // Reset scroll lock when drawer state changes
     if (!isDrawerOpen) {
       scrollLocked.current = false;
+      // Maintain current scroll position when drawer closes
+      const currentScroll = container.scrollTop;
+      const currentPage = Math.round(currentScroll / PAGE_HEIGHT());
+      pageIndex.current = currentPage;
     }
 
     const scrollToPage = (index, instant = false) => {
@@ -147,13 +151,9 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const current = container.scrollTop;
       const diff = Math.abs(current - target);
 
-      // Only correct if significantly off-target
-      if (diff > 5) {
-        requestAnimationFrame(() => {
-          if (!isDrawerOpen && !scrollLocked.current) {
-            container.scrollTo({ top: target, behavior: "instant" });
-          }
-        });
+      // Only correct if significantly off-target and drawer is closed
+      if (diff > 10 && !isDrawerOpen) {
+        container.scrollTo({ top: target, behavior: "instant" });
       }
     };
 
@@ -166,8 +166,10 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     container.addEventListener("touchend", handleTouchEnd, { passive: false });
     container.addEventListener("scroll", handleScroll, { passive: true });
 
-    // Start at page 0
-    container.scrollTo({ top: 0, behavior: "instant" });
+    // Initialize to current scroll position instead of forcing to 0
+    const initialScroll = container.scrollTop;
+    const initialPage = Math.round(initialScroll / PAGE_HEIGHT());
+    pageIndex.current = initialPage;
 
     return () => {
       container.removeEventListener("wheel", handleWheel);
