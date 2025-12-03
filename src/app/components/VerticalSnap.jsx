@@ -13,8 +13,8 @@ export default function VerticalSnap({ children }) {
     if (!container) return;
 
     const PAGE_COUNT = children.length;
-    const SNAP_DELAY = 700; // lock time while snapping
-    const THRESHOLD = 40;   // swipe movement threshold
+    const SNAP_DELAY = 700; 
+    const THRESHOLD = 40;   
 
     /* ----------------------- WHEEL (Desktop) ----------------------- */
     const handleWheel = (e) => {
@@ -60,7 +60,6 @@ export default function VerticalSnap({ children }) {
       const diff = touchStartY.current - endY;
 
       if (Math.abs(diff) < THRESHOLD) {
-        // Not a real swipe → return to current slide
         container.scrollTo({
           top: window.innerHeight * currentPage.current,
           behavior: "smooth",
@@ -74,7 +73,6 @@ export default function VerticalSnap({ children }) {
       const nextPage = currentPage.current + direction;
 
       if (nextPage < 0 || nextPage >= PAGE_COUNT) {
-        // Out of range → snap back
         container.scrollTo({
           top: window.innerHeight * currentPage.current,
           behavior: "smooth",
@@ -108,15 +106,15 @@ export default function VerticalSnap({ children }) {
   return (
     <div
       ref={ref}
-      className="h-full w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+      className="h-[100svh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
       style={{
         scrollSnapType: "y mandatory",
-        overscrollBehavior: "none",
+        overscrollBehavior: "contain",
         WebkitOverflowScrolling: "touch",
       }}
     >
       {children.map((child, i) => (
-        <div key={i} className="snap-start h-screen w-full">
+        <div key={i} className="snap-start w-full h-[100svh]">
           {child}
         </div>
       ))}
