@@ -21,6 +21,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     }
 
     const scrollToPage = (index, instant = false) => {
+      if (isDrawerOpen) return; // Don't scroll if drawer is open
       if (scrollLocked.current && !instant) return;
 
       scrollLocked.current = true;
@@ -146,8 +147,13 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const current = container.scrollTop;
       const diff = Math.abs(current - target);
 
+      // Only correct if significantly off-target
       if (diff > 5) {
-        container.scrollTo({ top: target });
+        requestAnimationFrame(() => {
+          if (!isDrawerOpen && !scrollLocked.current) {
+            container.scrollTo({ top: target, behavior: "instant" });
+          }
+        });
       }
     };
 
