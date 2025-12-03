@@ -8,7 +8,8 @@ import Lottie from "lottie-react";
 import animationData from "../../../public/animation_01_1920x1080.json";
 import animationData2 from "../../../public/animation_rz.json";
 import Image from "next/image";
-
+import Link from "next/link";
+import { Check } from 'lucide-react';
 export default function LanguageScreen() {
   const router = useRouter();
   const { language } = useAppStore();
@@ -39,9 +40,16 @@ export default function LanguageScreen() {
           <div className="bg-white h-[95%] w-[90%] rounded-3xl flex flex-col items-center justify-center gap-6">
 
             {/* Heading */}
-            <h2 style={{ fontFamily: 'var(--font-fira-sans)' }} className="text-xl font-semibold text-gray-600">
-              {language === "de" ? "Impressum" : "Welcome"}
-            </h2>
+          <Link href={language === "de" ? "/z/impressum" : "/z/imprint"}>
+                <button
+                  style={{ fontFamily: 'var(--font-fira-sans)' }}
+                  className="text-xl font-semibold text-gray-600 border-b-2 border-gray-600 hover:cursor-pointer"
+                >
+                  {language === "de" ? "Impressum" : "Imprint"}
+                </button>
+              </Link>
+
+
 
             {/* Language Toggle */}
             <LanguageToggle />
@@ -67,7 +75,7 @@ export default function LanguageScreen() {
               {language === "de" ? "Verstanden" : "Got it"}
 
               <span className="bg-[#2E7D32] rounded-full w-8 h-8 flex items-center justify-center">
-                <Image src="/Check.svg" alt="Arrow Right" width={16} height={16} />
+                <Check className="w-6 h-6" color="white" />
               </span>
             </button>
           </div>
