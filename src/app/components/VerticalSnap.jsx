@@ -15,6 +15,11 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     const container = containerRef.current;
     if (!container) return;
 
+    // Reset scroll lock when drawer state changes
+    if (!isDrawerOpen) {
+      scrollLocked.current = false;
+    }
+
     const scrollToPage = (index, instant = false) => {
       if (scrollLocked.current && !instant) return;
 
@@ -40,13 +45,14 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       if (isDrawerOpen) return;
 
-      scrollLocked.current = false;
-
       const target = pageIndex.current * PAGE_HEIGHT();
       const diff = Math.abs(container.scrollTop - target);
 
       if (diff > 1) {
+        scrollLocked.current = false;
         container.scrollTo({ top: target });
+      } else {
+        scrollLocked.current = false;
       }
     };
 
