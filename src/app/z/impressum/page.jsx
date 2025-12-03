@@ -1,60 +1,88 @@
 "use client";
 import { useRouter } from "next/navigation";
-import AppViewport from "../../components/AppViewport"
-import { Check } from 'lucide-react';
-import { X } from 'lucide-react';
-
+import AppViewport from "../../components/AppViewport";
+import { X } from "lucide-react";
 
 export default function Impressum() {
+  const router = useRouter();
 
-    const router = useRouter();
   return (
     <AppViewport>
-      {/* 🔹 Intro Animation (Full Screen) */}
-      <div className="animate-fade-in flex flex-col items-center justify-center h-full gap-8 bg-[#DBDBDB]">
-        <div className="bg-white h-[95%] w-[90%] rounded-3xl flex flex-col items-center pt-8 ">
-      <div className="flex items-start flex-col">  <h1 className="text-black text-base">Pizzeria Veneziana</h1>
-        <h1 className="text-black text-base">Besim Mustafi</h1></div>
-        
-        <div className="flex items-start flex-col">  <h1 className="text-black text-base">Usterstrasse 61</h1>
-        <h1 className="text-black text-base">CH-8600 Dübendorf ZH</h1></div>
+      <div
+        className="flex flex-col items-center justify-center h-full bg-[#D5D5D5]"
+        style={{ fontFamily: "var(--font-fira-sans)" }}
+      >
 
-    <div className="flex items-start flex-col">  <h1 className="text-black text-base">Stampfenbachstrasse 102</h1>
-        <h1 className="text-black text-base">CH-8006 Zürich ZH</h1></div>
+        {/* 🔶 TOP RED BAR */}
 
-    <div className="flex items-start flex-col">  <h1 className="text-black text-base">+41 44 501 88 33</h1>
-        <h1 className="text-black text-base">Info@pizzeriaveneziana.ch</h1></div>
+        {/* 🔷 WHITE CARD */}
+        <div className="h-[95%] w-[90%] bg-white rounded-3xl shadow-md px-6 py-8 ">
+          <div className="flex flex-col gap-6 text-black text-base">
 
- <div className="flex items-start flex-col">  <h1 className="text-black text-base">Veneziana GmbH</h1>
-        <h1 className="text-black text-base">
-CHE-139.272.389</h1></div>
-         
-         <div className="flex items-start flex-col">  <p className="text-black text-base">Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte dieser Website wird keine Gewähr übernommen. Haftungsansprüche aufgrund der Nutzung dieser Website sind ausgeschlossen.</p></div>
-         <div className="flex items-start flex-col">  <p className="text-black text-base">Alle Texte, Bilder und weiteren Inhalte dieser Website sind urheberrechtlich geschützt und dürfen ohne schriftliche Zustimmung nicht verwendet werden.</p></div>
+            <div>
+              <p>Pizzeria Veneziana</p>
+              <p>Besim Mustafi</p>
+            </div>
 
-           <div className="flex items-start flex-col">  <h1 className="text-black text-base">Design:</h1>
-        <h1 className="text-black text-base">
-Janic, +41 78 304 76 86</h1></div>
+            <div>
+              <p>Usterstrasse 61</p>
+              <p>CH-8600 Dübendorf ZH</p>
+            </div>
 
- <button 
-            style={{ fontFamily: 'var(--font-fira-sans)' }}
-              onClick={() => router.push(`/z`)}
-              className="flex items-center gap-4 bg-[#D5D5D5] text-black font-semibold px-6 py-3 rounded-full text-lg active:scale-95 transition-all shadow-md"
+            <div>
+              <p>Stampfenbachstrasse 102</p>
+              <p>CH-8006 Zürich ZH</p>
+            </div>
+
+            <div>
+              <p>+41 44 501 88 33</p>
+              <p>Info@pizzeriaveneziana.ch</p>
+            </div>
+
+            <div>
+              <p>Veneziana GmbH</p>
+              <p>CHE-139.272.389</p>
+            </div>
+
+            <div>
+              <p>
+                Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte
+                dieser Website wird keine Gewähr übernommen. Haftungsansprüche
+                aufgrund der Nutzung dieser Website sind ausgeschlossen.
+              </p>
+            </div>
+
+            <div>
+              <p>
+                Alle Texte, Bilder und weiteren Inhalte dieser Website sind
+                urheberrechtlich geschützt und dürfen ohne schriftliche
+                Zustimmung nicht verwendet werden.
+              </p>
+            </div>
+
+            <div>
+              <p>Design:</p>
+              <p>Janic, +41 78 304 76 86</p>
+            </div>
+
+            {/* CLOSE BUTTON */}
+            <div className="flex justify-center">
+            <button
+              onClick={() => router.push("/z")}
+              style={{ fontFamily: "var(--font-fira-sans)" }}
+              className="mt-8 w-[40%] flex items-center justify-between bg-[#D5D5D5] px-3 py-2 rounded-full text-black font-semibold text-lg shadow-md active:scale-95 transition-all"
             >
               Schliessen
-
-              <span className="bg-[#797979] rounded-full w-8 h-8 flex items-center justify-center">
-                <X className="w-6 h-6" color="white" />
+              <span className="bg-[#797979] rounded-full w-10 h-10 flex items-center justify-center">
+                <X className="w-6 h-6 text-white" />
               </span>
             </button>
-
+          </div>  
+          </div>
         </div>
 
-       
-
-  
-          </div>
-      
+        {/* 🔶 BOTTOM RED BAR */}
+      </div>
     </AppViewport>
   );
 }
