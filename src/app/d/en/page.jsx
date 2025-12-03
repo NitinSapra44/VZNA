@@ -8,7 +8,7 @@ import ProductDetail from "@/app/components/ProductDetail";
 import { menuData } from "@/data/menuData";
 
 /* ---------------------------------------------
-   SORTING LOGIC
+   SORTING LOGIC (GLOBAL + REUSABLE)
 ---------------------------------------------- */
 function sortItems(a, b) {
   const catA = menuData.categories.find(c => c.id === a.category_id);
@@ -31,8 +31,7 @@ function sortItems(a, b) {
 }
 
 export default function MenuPage() {
-  const lang = "en";
-
+  const lang = "en";  
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -44,17 +43,11 @@ export default function MenuPage() {
     (a, b) => a.order_index - b.order_index
   );
 
-  /* ---------------------------------------------
-     SET INITIAL ITEMS (SORTED)
-  ---------------------------------------------- */
   useEffect(() => {
     const sorted = [...menuData.items].sort(sortItems);
     setCurrentItems(sorted);
   }, []);
 
-  /* ---------------------------------------------
-     CATEGORY / SUBCATEGORY FILTERS
-  ---------------------------------------------- */
   const handleShowAll = () => {
     setCurrentItems([...menuData.items].sort(sortItems));
     setSelectedCategory(null);
@@ -84,7 +77,7 @@ export default function MenuPage() {
     setSelectedSubcategory(subcategory);
 
     const filtered = menuData.items
-      .filter(i =>
+      .filter(i => 
         i.category_id === selectedCategory.id &&
         i.subcategory_id === subcategory.id
       )
@@ -100,9 +93,6 @@ export default function MenuPage() {
     setSelectedSubcategory(null);
   };
 
-  /* ---------------------------------------------
-     OPEN PRODUCT OVERLAY
-  ---------------------------------------------- */
   const handleOpenProduct = (index) => {
     setSelectedItem(currentItems[index]);
   };
@@ -111,17 +101,17 @@ export default function MenuPage() {
     <AppViewport>
       <div className="relative h-full w-full">
 
-        {/* LOGO TOP LEFT */}
+        {/* Fixed Logo - Top Left (absolute to stay within viewport) */}
         <div className="absolute top-6 left-6 z-50 pointer-events-none">
-          <img 
+           <img 
             src="/logo.svg"
-            alt="Restaurant Logo"
+            alt="Restaurant Logo" 
             className="h-16 w-auto drop-shadow-lg border-b-2 border-white pb-3"
           />
-          <p className="text-white text-xl">Dübendorf</p>
+            <p className="text-white  text-xl">Dübendorf</p>
         </div>
 
-        {/* TOP RIGHT MENU DROPDOWN */}
+        {/* Dropdown navigation */}
         <MenuDropdown
           isOpen={menuOpen}
           onToggle={() => setMenuOpen(!menuOpen)}
@@ -135,7 +125,7 @@ export default function MenuPage() {
           showSubcategories={showSubcategories}
         />
 
-        {/* MAIN FULLSCREEN TIKTOK SCROLL */}
+        {/* Items View */}
         {currentItems.length > 0 ? (
           <VerticalSnap>
             {currentItems.map((item, index) => (
@@ -163,7 +153,7 @@ export default function MenuPage() {
           </div>
         )}
 
-        {/* PRODUCT MODAL OVERLAY */}
+        {/* Product Popup */}
         {selectedItem && (
           <ProductDetail
             item={selectedItem}

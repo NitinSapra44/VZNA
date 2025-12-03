@@ -103,12 +103,12 @@ export default function MenuPage() {
 
         {/* Fixed Logo - Top Left (absolute to stay within viewport) */}
         <div className="absolute top-6 left-6 z-50 pointer-events-none">
-          <img 
+           <img 
             src="/logo.svg"
             alt="Restaurant Logo" 
             className="h-16 w-auto drop-shadow-lg border-b-2 border-white pb-3"
           />
-           <p className="text-white  text-xl">Zürich</p>
+            <p className="text-white  text-xl">Dübendorf</p>
         </div>
 
         {/* Dropdown navigation */}

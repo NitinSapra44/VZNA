@@ -10,7 +10,7 @@ export default function MenuTile({ item, index, language }) {
   const handleOpen = () => {
     if (!isOpen) {
       setIsOpen(true);
-      setShowDrawer(true); // instantly show drawer, no delay
+      setShowDrawer(true);
     }
   };
 
@@ -23,12 +23,12 @@ export default function MenuTile({ item, index, language }) {
   const subtitle = language === "de" ? item.subtitle_de : item.subtitle_en;
 
   return (
-    <div className="relative h-full w-full snap-center">
+    <div className="relative w-full h-[100svh] snap-center">
       {/* Background Image */}
       <img
         src={item.image_url}
         alt={title}
-        className="absolute inset-0 object-cover w-full h-full"
+        className="absolute inset-0 w-full h-[100svh] object-cover"
       />
 
       {/* Gradient Overlay */}
@@ -36,8 +36,18 @@ export default function MenuTile({ item, index, language }) {
 
       {/* Bottom-left text */}
       <div className="absolute bottom-6 left-6 text-white max-w-md">
-        <h1 style={{ fontFamily: 'var(--font-fira-sans)' }} className="text-base mb-2">{title}</h1>
-        <p style={{ fontFamily: 'var(--font-fira-sans)' }} className="text-base opacity-90">{subtitle}</p>
+        <h1
+          style={{ fontFamily: "var(--font-fira-sans)" }}
+          className="text-base mb-2"
+        >
+          {title}
+        </h1>
+        <p
+          style={{ fontFamily: "var(--font-fira-sans)" }}
+          className="text-base opacity-90"
+        >
+          {subtitle}
+        </p>
       </div>
 
       {/* Bottom-right static button (NO ANIMATIONS) */}
@@ -48,7 +58,7 @@ export default function MenuTile({ item, index, language }) {
           style={{
             borderRadius: 9999,
             height: 60,
-            WebkitTapHighlightColor: 'transparent',
+            WebkitTapHighlightColor: "transparent",
           }}
         >
           <div className="flex items-center gap-2">
