@@ -17,7 +17,6 @@ const firaSans = Fira_Sans({
   variable: "--font-fira-sans",
 });
 
-// Add this viewport export
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -39,7 +38,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased h-full bg-white`}
+        className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased h-full m-0 p-0`}
       >
         {children}
       </body>
