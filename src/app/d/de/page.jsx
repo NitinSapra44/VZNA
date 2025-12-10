@@ -102,10 +102,12 @@ export default function MenuPage() {
       <div className="relative h-full w-full">
 
         {/* Fixed Logo */}
-{/* Fixed Logo */}
 <div 
   className="absolute left-6 z-50 pointer-events-none"
-  style={{ top: "calc(env(safe-area-inset-top) + 1.5rem)" }}
+  style={{ 
+    top: "max(env(safe-area-inset-top), 24px)",
+    paddingTop: "6px"
+  }}
 >
   <img 
     src="/logo.svg"
@@ -114,7 +116,6 @@ export default function MenuPage() {
   />
   <p className="text-white text-xl">Dübendorf</p>
 </div>
-
         {/* Dropdown navigation */}
         <MenuDropdown
           isOpen={menuOpen}

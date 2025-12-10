@@ -6,17 +6,11 @@
   box-sizing: border-box;
 }
 
-html {
+html, body {
   height: 100%;
-  height: -webkit-fill-available;
-  background: #000;
-}
-
-body {
-  min-height: 100%;
-  min-height: -webkit-fill-available;
-  background: #000;
+  width: 100%;
   overflow: hidden;
+  background: #8B7355; /* Match your wood texture color */
 }
 
 .no-scrollbar::-webkit-scrollbar {

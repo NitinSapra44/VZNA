@@ -23,7 +23,7 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#000000",
+  themeColor: "#8B7355",
 };
 
 export const metadata = {
@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#8B7355" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased`}
