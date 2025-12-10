@@ -15,9 +15,14 @@ export default function AppViewport({ children }) {
         mx-auto
         max-w-[560px]
         w-full
-        ${mounted ? "h-full overflow-hidden bg-white" : "h-auto"}
+        min-h-[100dvh]
+        ${mounted ? "overflow-hidden bg-white" : ""}
         relative
       `}
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
     >
       {children}
     </div>

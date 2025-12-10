@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono,Fira_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Fira_Sans } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,21 +12,34 @@ const geistMono = Geist_Mono({
 });
 
 const firaSans = Fira_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'], // choose weights you need
-  variable: '--font-fira-sans',
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-fira-sans",
 });
+
+// Add this viewport export
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
 
 export const metadata = {
   title: "VZNA",
   description: "BEST PLACE TO EAT",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased h-full bg-white`}
       >
         {children}
       </body>

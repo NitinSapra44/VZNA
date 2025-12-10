@@ -25,3 +25,9 @@ html, body {
 button {
   -webkit-tap-highlight-color: transparent;
 }
+
+html,
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
