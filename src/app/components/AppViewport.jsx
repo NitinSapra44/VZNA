@@ -1,30 +1,23 @@
 "use client";
-import { useState, useEffect } from "react";
 
 export default function AppViewport({ children }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <div
-      suppressHydrationWarning
-      className={`
-        mx-auto
-        max-w-[560px]
-        w-full
-        min-h-[100dvh]
-        ${mounted ? "overflow-hidden bg-white" : ""}
-        relative
-      `}
+      className="mx-auto max-w-[560px] w-full relative overflow-hidden"
       style={{
-        paddingTop: "env(safe-area-inset-top)",
-        paddingBottom: "env(safe-area-inset-bottom)",
+        height: "100dvh",
+        background: "#000",
       }}
     >
-      {children}
+      <div
+        className="h-full w-full relative"
+        style={{
+          paddingTop: "env(safe-area-inset-top)",
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

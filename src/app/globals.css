@@ -1,27 +1,29 @@
 @import "tailwindcss";
 
-/* Hide scrollbar globally */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #000;
+  overflow: hidden;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-/* Force correct mobile viewport behavior */
-html, body {
-  height: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow: hidden;
-  touch-action: pan-y;
-  background: #fff;
-  margin: 0;
-  padding: 0;
-}
-
-/* Safe tap targets */
 button {
   -webkit-tap-highlight-color: transparent;
 }

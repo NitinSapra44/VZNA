@@ -36,9 +36,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased h-full m-0 p-0`}
+        className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased`}
       >
         {children}
       </body>
