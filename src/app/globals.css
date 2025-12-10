@@ -6,11 +6,15 @@
   box-sizing: border-box;
 }
 
-html,
-body {
+html {
   height: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: -webkit-fill-available;
+  background: #000;
+}
+
+body {
+  min-height: 100%;
+  min-height: -webkit-fill-available;
   background: #000;
   overflow: hidden;
 }
