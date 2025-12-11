@@ -10,7 +10,10 @@ html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background: #8B7355; /* Match your wood texture color */
+  background-image: url('/bg-placeholder_01_1080x1920.jpeg');
+  background-size: cover;        /* Makes image fill the screen */
+  background-repeat: no-repeat;  /* Prevent tiling */
+  background-position: center;   /* Center the image */
 }
 
 .no-scrollbar::-webkit-scrollbar {
