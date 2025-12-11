@@ -10,7 +10,7 @@ html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background-image: url('/bg-placeholder_01_1080x1920.jpeg');
+  background-image: url('/placeholder_01_1080x1920.jpeg');
   background-size: cover;        /* Makes image fill the screen */
   background-repeat: no-repeat;  /* Prevent tiling */
   background-position: center;   /* Center the image */
