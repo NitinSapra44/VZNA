@@ -67,12 +67,7 @@ export default function MenuDropdown({
   };
 
   return (
-    <div 
-  className="absolute right-4 z-40"
-  style={{ 
-    top: "calc(env(safe-area-inset-top, 47px) + 12px)"
-  }}
->
+<div className="absolute top-6 right-4 z-40">
       {/* Menu Button */}
       <button
         onClick={handleButtonClick}

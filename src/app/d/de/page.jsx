@@ -102,12 +102,8 @@ export default function MenuPage() {
       <div className="relative h-full w-full">
 
         {/* Fixed Logo */}
-<div 
-  className="absolute left-6 z-50 pointer-events-none"
-  style={{ 
-    top: "calc(env(safe-area-inset-top, 47px) + 12px)"
-  }}
->
+{/* Fixed Logo */}
+<div className="absolute top-6 left-6 z-50 pointer-events-none">
   <img 
     src="/logo.svg"
     alt="Restaurant Logo" 

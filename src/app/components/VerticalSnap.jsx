@@ -10,7 +10,14 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   const touchStartTime = useRef(0);
 
   const PAGE_COUNT = children.length;
-  const PAGE_HEIGHT = () => window.innerHeight;
+
+  // Use visualViewport for accurate height on iOS Safari
+  const getPageHeight = () => {
+    if (typeof window !== "undefined" && window.visualViewport) {
+      return window.visualViewport.height;
+    }
+    return window.innerHeight;
+  };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -18,12 +25,12 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
     if (isDrawerOpen) {
       scrollLocked.current = true;
-      const freezeTop = pageIndex.current * PAGE_HEIGHT();
+      const freezeTop = pageIndex.current * getPageHeight();
       container.scrollTo({ top: freezeTop, behavior: "instant" });
     } else {
       setTimeout(() => {
         scrollLocked.current = false;
-        const target = pageIndex.current * PAGE_HEIGHT();
+        const target = pageIndex.current * getPageHeight();
         container.scrollTo({ top: target, behavior: "instant" });
       }, 100);
     }
@@ -41,7 +48,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       pageIndex.current = index;
 
       container.scrollTo({
-        top: index * PAGE_HEIGHT(),
+        top: index * getPageHeight(),
         behavior: instant ? "instant" : "smooth",
       });
 
@@ -71,7 +78,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     const handleTouchStart = (e) => {
       if (isDrawerOpen) return;
       if (scrollLocked.current) return;
-      
+
       isTouching.current = true;
       touchStartY.current = e.touches[0].clientY;
       touchStartTime.current = Date.now();
@@ -87,14 +94,14 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     const handleTouchEnd = (e) => {
       if (isDrawerOpen) return;
       isTouching.current = false;
-      
+
       if (scrollLocked.current) return;
 
       const diff = touchStartY.current - e.changedTouches[0].clientY;
       const touchEndTime = Date.now();
       const touchDuration = touchEndTime - touchStartTime.current;
       const velocity = Math.abs(diff) / touchDuration;
-      
+
       if (Math.abs(diff) < 20) {
         scrollToPage(pageIndex.current, false);
         return;
@@ -105,7 +112,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       if (velocity > 1.5 && Math.abs(diff) > 100) {
         const pagesToSkip = Math.min(Math.floor(velocity / 2), 2);
-        next = pageIndex.current + (direction * Math.max(1, pagesToSkip));
+        next = pageIndex.current + direction * Math.max(1, pagesToSkip);
       }
 
       if (next < 0) next = PAGE_COUNT - 1;
@@ -121,9 +128,9 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       if (isTouching.current) return;
 
       if (scrollTimeout) clearTimeout(scrollTimeout);
-      
+
       scrollTimeout = setTimeout(() => {
-        const target = pageIndex.current * PAGE_HEIGHT();
+        const target = pageIndex.current * getPageHeight();
         const diff = Math.abs(container.scrollTop - target);
 
         if (diff > 50) {
@@ -155,18 +162,18 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       ref={containerRef}
       className="w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
       style={{
-        height: "100%",
+        height: "100dvh",
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
         WebkitOverflowScrolling: "touch",
       }}
     >
       {children.map((child, i) => (
-        <div 
-          key={i} 
+        <div
+          key={i}
           className="w-full snap-start"
           style={{
-            height: "100vh",
+            height: "100dvh",
             scrollSnapAlign: "start",
           }}
         >

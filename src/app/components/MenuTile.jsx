@@ -21,11 +21,11 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
   const subtitle = language === "de" ? item.subtitle_de : item.subtitle_en;
 
   return (
-    <div 
+    <div
       className="relative w-full snap-center overflow-hidden"
-      style={{ height: "100vh" }}
+      style={{ height: "100dvh" }}
     >
-      {/* Background - extends full screen including behind Dynamic Island */}
+      {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${item.image_url})` }}
@@ -34,13 +34,8 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
       {/* Dark Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-      {/* Text - positioned with safe area padding */}
-      <div 
-        className="absolute left-6 text-white max-w-md"
-        style={{ 
-          bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)" 
-        }}
-      >
+      {/* Text */}
+      <div className="absolute bottom-24 left-6 text-white max-w-md">
         <h1 className="text-base mb-2" style={{ fontFamily: "var(--font-fira-sans)" }}>
           {title}
         </h1>
@@ -49,14 +44,11 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
         </p>
       </div>
 
-      {/* Info Button - positioned with safe area padding */}
+      {/* Info Button */}
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="absolute right-6 bg-white z-30 px-6 py-3 font-semibold rounded-full shadow-md"
-          style={{ 
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)" 
-          }}
+          className="absolute bottom-24 right-6 bg-white z-30 px-6 py-3 font-semibold rounded-full shadow-md"
         >
           <div className="flex items-center gap-2">
             Information <span className="text-xl">+</span>
