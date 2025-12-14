@@ -12,33 +12,23 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   const PAGE_COUNT = children.length;
   const PAGE_HEIGHT = () => window.innerHeight;
 
-  /* ---------------------------------------------------------
-        FREEZE SCROLL ONLY WHILE DRAWER IS OPEN
-  --------------------------------------------------------- */
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     if (isDrawerOpen) {
       scrollLocked.current = true;
-
       const freezeTop = pageIndex.current * PAGE_HEIGHT();
       container.scrollTo({ top: freezeTop, behavior: "instant" });
     } else {
-      // Unlock scrolling after drawer closes
       setTimeout(() => {
         scrollLocked.current = false;
-
-        // Correct minor layout shifts
         const target = pageIndex.current * PAGE_HEIGHT();
         container.scrollTo({ top: target, behavior: "instant" });
       }, 100);
     }
   }, [isDrawerOpen]);
 
-  /* ---------------------------------------------------------
-        MAIN SCROLL LOGIC
-  --------------------------------------------------------- */
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -60,7 +50,6 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       }, 200);
     };
 
-    /* ---------------- DESKTOP WHEEL ---------------- */
     let wheelTimeout = null;
     const handleWheel = (e) => {
       if (isDrawerOpen) return;
@@ -79,7 +68,6 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       }, 10);
     };
 
-    /* ---------------- MOBILE SWIPE ---------------- */
     const handleTouchStart = (e) => {
       if (isDrawerOpen) return;
       if (scrollLocked.current) return;
@@ -91,8 +79,6 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
     const handleTouchMove = (e) => {
       if (isDrawerOpen) return;
-      // Allow natural scrolling during touch - don't prevent default
-      // unless we're locked from a previous animation
       if (scrollLocked.current) {
         e.preventDefault();
       }
@@ -107,22 +93,17 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const diff = touchStartY.current - e.changedTouches[0].clientY;
       const touchEndTime = Date.now();
       const touchDuration = touchEndTime - touchStartTime.current;
-      const velocity = Math.abs(diff) / touchDuration; // pixels per millisecond
+      const velocity = Math.abs(diff) / touchDuration;
       
-      // If swipe is too small, snap back to current page
       if (Math.abs(diff) < 20) {
         scrollToPage(pageIndex.current, false);
         return;
       }
 
-      // Determine direction and next page
       const direction = diff > 0 ? 1 : -1;
       let next = pageIndex.current + direction;
 
-      // For fast swipes (high velocity), allow skipping multiple pages
-      // but still show smooth animation
       if (velocity > 1.5 && Math.abs(diff) > 100) {
-        // Fast swipe - could skip pages but animate smoothly
         const pagesToSkip = Math.min(Math.floor(velocity / 2), 2);
         next = pageIndex.current + (direction * Math.max(1, pagesToSkip));
       }
@@ -130,32 +111,27 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       if (next < 0) next = PAGE_COUNT - 1;
       if (next >= PAGE_COUNT) next = 0;
 
-      // Always use smooth animation
       scrollToPage(next, false);
     };
 
-    /* ---------------- SCROLL FIX (REDUCED INTERFERENCE) ---------------- */
     let scrollTimeout = null;
     const handleScroll = () => {
       if (isDrawerOpen) return;
       if (scrollLocked.current) return;
-      if (isTouching.current) return; // Don't interfere during active touch
+      if (isTouching.current) return;
 
-      // Clear previous timeout to debounce
       if (scrollTimeout) clearTimeout(scrollTimeout);
       
       scrollTimeout = setTimeout(() => {
         const target = pageIndex.current * PAGE_HEIGHT();
         const diff = Math.abs(container.scrollTop - target);
 
-        // Only correct if significantly off
         if (diff > 50) {
           container.scrollTo({ top: target, behavior: "instant" });
         }
       }, 50);
     };
 
-    /* ---------------- EVENT LISTENERS ---------------- */
     container.addEventListener("wheel", handleWheel, { passive: false });
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
     container.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -177,8 +153,9 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   return (
     <div
       ref={containerRef}
-      className="h-[100svh] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+      className="w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
       style={{
+        height: "100%",
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
         WebkitOverflowScrolling: "touch",
@@ -187,8 +164,9 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       {children.map((child, i) => (
         <div 
           key={i} 
-          className="h-[100svh] w-full snap-start"
+          className="w-full snap-start"
           style={{
+            height: "100vh",
             scrollSnapAlign: "start",
           }}
         >

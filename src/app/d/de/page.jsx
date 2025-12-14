@@ -105,8 +105,7 @@ export default function MenuPage() {
 <div 
   className="absolute left-6 z-50 pointer-events-none"
   style={{ 
-    top: "max(env(safe-area-inset-top), 24px)",
-    paddingTop: "6px"
+    top: "calc(env(safe-area-inset-top, 47px) + 12px)"
   }}
 >
   <img 

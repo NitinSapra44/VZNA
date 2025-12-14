@@ -9,21 +9,23 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
   const handleOpen = (e) => {
     e.stopPropagation();
     setIsOpen(true);
-    onDrawerToggle(true); // freeze VerticalSnap
+    onDrawerToggle(true);
   };
 
   const handleClose = () => {
     setIsOpen(false);
-    onDrawerToggle(false); // unfreeze VerticalSnap
+    onDrawerToggle(false);
   };
 
   const title = language === "de" ? item.title_de : item.title_en;
   const subtitle = language === "de" ? item.subtitle_de : item.subtitle_en;
 
   return (
-    <div className="relative w-full h-[100svh] snap-center overflow-hidden">
-
-      {/* Background */}
+    <div 
+      className="relative w-full snap-center overflow-hidden"
+      style={{ height: "100vh" }}
+    >
+      {/* Background - extends full screen including behind Dynamic Island */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${item.image_url})` }}
@@ -32,8 +34,13 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
       {/* Dark Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-      {/* Text */}
-      <div className="absolute bottom-6 left-6 text-white max-w-md">
+      {/* Text - positioned with safe area padding */}
+      <div 
+        className="absolute left-6 text-white max-w-md"
+        style={{ 
+          bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)" 
+        }}
+      >
         <h1 className="text-base mb-2" style={{ fontFamily: "var(--font-fira-sans)" }}>
           {title}
         </h1>
@@ -42,11 +49,14 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
         </p>
       </div>
 
-      {/* Info Button */}
+      {/* Info Button - positioned with safe area padding */}
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="absolute bottom-6 right-6 bg-white z-30 px-6 py-3 font-semibold rounded-full shadow-md"
+          className="absolute right-6 bg-white z-30 px-6 py-3 font-semibold rounded-full shadow-md"
+          style={{ 
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)" 
+          }}
         >
           <div className="flex items-center gap-2">
             Information <span className="text-xl">+</span>

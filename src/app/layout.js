@@ -23,7 +23,6 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#8B7355",
 };
 
 export const metadata = {
@@ -34,18 +33,11 @@ export const metadata = {
     statusBarStyle: "black-translucent",
     title: "VZNA",
   },
-  other: {
-    "apple-mobile-web-app-capable": "yes",
-    "mobile-web-app-capable": "yes",
-  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <meta name="theme-color" content="#8B7355" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} antialiased`}
       >
