@@ -10,14 +10,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   const touchStartTime = useRef(0);
 
   const PAGE_COUNT = children.length;
-
-  // Use visualViewport for accurate height on iOS Safari
-  const getPageHeight = () => {
-    if (typeof window !== "undefined" && window.visualViewport) {
-      return window.visualViewport.height;
-    }
-    return window.innerHeight;
-  };
+  const PAGE_HEIGHT = () => window.innerHeight;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -25,12 +18,12 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
     if (isDrawerOpen) {
       scrollLocked.current = true;
-      const freezeTop = pageIndex.current * getPageHeight();
+      const freezeTop = pageIndex.current * PAGE_HEIGHT();
       container.scrollTo({ top: freezeTop, behavior: "instant" });
     } else {
       setTimeout(() => {
         scrollLocked.current = false;
-        const target = pageIndex.current * getPageHeight();
+        const target = pageIndex.current * PAGE_HEIGHT();
         container.scrollTo({ top: target, behavior: "instant" });
       }, 100);
     }
@@ -48,7 +41,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       pageIndex.current = index;
 
       container.scrollTo({
-        top: index * getPageHeight(),
+        top: index * PAGE_HEIGHT(),
         behavior: instant ? "instant" : "smooth",
       });
 
@@ -130,7 +123,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       if (scrollTimeout) clearTimeout(scrollTimeout);
 
       scrollTimeout = setTimeout(() => {
-        const target = pageIndex.current * getPageHeight();
+        const target = pageIndex.current * PAGE_HEIGHT();
         const diff = Math.abs(container.scrollTop - target);
 
         if (diff > 50) {
@@ -160,9 +153,8 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   return (
     <div
       ref={containerRef}
-      className="w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+      className="w-full h-full overflow-y-scroll snap-y snap-mandatory no-scrollbar"
       style={{
-        height: "100dvh",
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
         WebkitOverflowScrolling: "touch",
@@ -173,7 +165,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
           key={i}
           className="w-full snap-start"
           style={{
-            height: "100dvh",
+            height: "100vh",
             scrollSnapAlign: "start",
           }}
         >

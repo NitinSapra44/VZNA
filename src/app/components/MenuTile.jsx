@@ -22,13 +22,18 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
 
   return (
     <div
-      className="relative w-full snap-center overflow-hidden"
-      style={{ height: "100dvh" }}
+      className="relative w-full h-full snap-center overflow-hidden"
     >
-      {/* Background */}
+      {/* Background - must start from absolute top */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${item.image_url})` }}
+        style={{ 
+          backgroundImage: `url(${item.image_url})`,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
       />
 
       {/* Dark Gradient */}
