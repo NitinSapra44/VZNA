@@ -1,9 +1,11 @@
 "use client";
 import { useRef, useEffect, useMemo, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Virtual } from "swiper/modules";
 
 // Import Swiper styles
 import "swiper/css";
+import "swiper/css/virtual";
 
 export default function VerticalSnap({ children, isDrawerOpen }) {
   const swiperRef = useRef(null);
@@ -32,16 +34,23 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   return (
     <Swiper
       direction="vertical"
+      modules={[Virtual]}
       slidesPerView={1}
-      speed={300}
+      speed={250}
       loop={true}
-      loopAdditionalSlides={2}
+      loopAdditionalSlides={1}
       loopPreventsSliding={false}
+      virtual={{
+        enabled: true,
+        addSlidesBefore: 1,
+        addSlidesAfter: 1,
+        cache: false,
+      }}
       touchRatio={1}
       touchAngle={45}
       threshold={3}
       longSwipesRatio={0.2}
-      longSwipesMs={200}
+      longSwipesMs={150}
       followFinger={true}
       shortSwipes={true}
       allowTouchMove={!isDrawerOpen}
@@ -51,11 +60,16 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       resistance={true}
       resistanceRatio={0.85}
       freeMode={false}
-      cssMode={false}
       updateOnWindowResize={false}
-      observer={false}
-      observeParents={false}
       onSwiper={handleSwiper}
+      onSlideChangeTransitionStart={() => {
+        // Request idle callback for cleanup
+        if (typeof requestIdleCallback !== 'undefined') {
+          requestIdleCallback(() => {
+            if (window.gc) window.gc();
+          });
+        }
+      }}
       className="w-full h-full"
       style={{
         width: "100%",
@@ -63,7 +77,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       }}
     >
       {slides.map((child, i) => (
-        <SwiperSlide key={i} className="w-full h-full">
+        <SwiperSlide key={i} virtualIndex={i} className="w-full h-full">
           {child}
         </SwiperSlide>
       ))}
