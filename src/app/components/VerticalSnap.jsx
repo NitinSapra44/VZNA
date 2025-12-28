@@ -1,11 +1,9 @@
 "use client";
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Virtual } from "swiper/modules";
 
 // Import Swiper styles
 import "swiper/css";
-import "swiper/css/virtual";
 
 export default function VerticalSnap({ children, isDrawerOpen }) {
   const swiperRef = useRef(null);
@@ -26,42 +24,38 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     }
   }, [isDrawerOpen]);
 
+  // Memoize the swiper callback to prevent re-renders
+  const handleSwiper = useCallback((swiper) => {
+    swiperRef.current = swiper;
+  }, []);
+
   return (
     <Swiper
       direction="vertical"
-      modules={[Virtual]}
       slidesPerView={1}
-      speed={400}
+      speed={300}
       loop={true}
-      loopAdditionalSlides={1}
+      loopAdditionalSlides={2}
       loopPreventsSliding={false}
-      virtual={{
-        enabled: true,
-        addSlidesBefore: 2,
-        addSlidesAfter: 2,
-      }}
       touchRatio={1}
       touchAngle={45}
-      threshold={5}
-      longSwipesRatio={0.3}
-      longSwipesMs={300}
+      threshold={3}
+      longSwipesRatio={0.2}
+      longSwipesMs={200}
       followFinger={true}
       shortSwipes={true}
       allowTouchMove={!isDrawerOpen}
       simulateTouch={true}
-      watchSlidesProgress={true}
-      preloadImages={false}
-      lazy={{
-        loadPrevNext: true,
-        loadPrevNextAmount: 1,
-      }}
-      onSwiper={(swiper) => {
-        swiperRef.current = swiper;
-      }}
-      onSlideChange={() => {
-        // Clean up on slide change to prevent memory leaks
-        if (window.gc) window.gc();
-      }}
+      touchStartPreventDefault={false}
+      passiveListeners={true}
+      resistance={true}
+      resistanceRatio={0.85}
+      freeMode={false}
+      cssMode={false}
+      updateOnWindowResize={false}
+      observer={false}
+      observeParents={false}
+      onSwiper={handleSwiper}
       className="w-full h-full"
       style={{
         width: "100%",
@@ -69,7 +63,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       }}
     >
       {slides.map((child, i) => (
-        <SwiperSlide key={i} virtualIndex={i} className="w-full h-full">
+        <SwiperSlide key={i} className="w-full h-full">
           {child}
         </SwiperSlide>
       ))}
