@@ -4,6 +4,7 @@ import AppViewport from "@/app/components/AppViewport";
 import VerticalSnap from "@/app/components/VerticalSnap";
 import MenuTile from "@/app/components/MenuTile";
 import MenuDropdown from "@/app/components/MenuDropdown";
+import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { menuData2 as menuData  } from "@/data/menudata2";
 
 /* ---------------------------------------------
@@ -98,8 +99,9 @@ export default function MenuPage() {
   };
 
   return (
-    <AppViewport>
-      <div className="relative h-full w-full">
+    <ErrorBoundary>
+      <AppViewport>
+        <div className="relative h-full w-full">
 
         {/* Fixed Logo */}
         <div className="absolute top-6 left-6 z-50 pointer-events-none">
@@ -155,5 +157,6 @@ export default function MenuPage() {
         )}
       </div>
     </AppViewport>
+    </ErrorBoundary>
   );
 }

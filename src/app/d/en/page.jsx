@@ -4,6 +4,7 @@ import AppViewport from "@/app/components/AppViewport";
 import VerticalSnap from "@/app/components/VerticalSnap";
 import MenuTile from "@/app/components/MenuTile";
 import MenuDropdown from "@/app/components/MenuDropdown";
+import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { menuData } from "@/data/menuData";
 
 /* ---------------------------------------------
@@ -45,6 +46,7 @@ export default function MenuPage() {
 
   const categories = [...menuData.categories].sort(
     (a, b) => a.order_index - b.order_index
+  </ErrorBoundary>
   );
 
   useEffect(() => {
@@ -98,6 +100,7 @@ export default function MenuPage() {
   };
 
   return (
+    <ErrorBoundary>
     <AppViewport>
       <div className="relative h-full w-full">
 
@@ -155,5 +158,6 @@ export default function MenuPage() {
         )}
       </div>
     </AppViewport>
+  </ErrorBoundary>
   );
 }
