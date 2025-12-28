@@ -32,10 +32,13 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       modules={[Virtual]}
       slidesPerView={1}
       speed={400}
+      loop={true}
+      loopAdditionalSlides={1}
+      loopPreventsSliding={false}
       virtual={{
         enabled: true,
-        addSlidesBefore: 1,
-        addSlidesAfter: 1,
+        addSlidesBefore: 2,
+        addSlidesAfter: 2,
       }}
       touchRatio={1}
       touchAngle={45}
@@ -56,7 +59,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         swiperRef.current = swiper;
       }}
       onSlideChange={() => {
-        // Force garbage collection hint
+        // Clean up on slide change to prevent memory leaks
         if (window.gc) window.gc();
       }}
       className="w-full h-full"
