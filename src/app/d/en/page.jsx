@@ -46,7 +46,6 @@ export default function MenuPage() {
 
   const categories = [...menuData.categories].sort(
     (a, b) => a.order_index - b.order_index
-  </ErrorBoundary>
   );
 
   useEffect(() => {
