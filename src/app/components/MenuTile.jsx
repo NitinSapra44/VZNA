@@ -53,10 +53,11 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="absolute bottom-24 right-6 bg-white z-30 px-6 py-3 font-semibold rounded-full shadow-md"
+          className="absolute bottom-24 right-6 bg-white/95 backdrop-blur-sm text-black z-30 px-8 py-3.5 font-bold rounded-full shadow-2xl hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] active:scale-90 transition-all duration-300 hover:bg-white border-2 border-white/20"
         >
-          <div className="flex items-center gap-2">
-            Information <span className="text-xl">+</span>
+          <div className="flex items-center gap-2.5">
+            <span className="tracking-wide">Information</span>
+            <span className="text-2xl font-light">+</span>
           </div>
         </button>
       )}

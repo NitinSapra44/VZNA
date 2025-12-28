@@ -21,6 +21,7 @@ export default function AppViewport({ children }) {
       
       {/* Main content container */}
       <div
+        className="flex items-center justify-center"
         style={{
           position: "fixed",
           top: 0,
@@ -30,7 +31,7 @@ export default function AppViewport({ children }) {
           overflow: "hidden",
         }}
       >
-        <div className="mx-auto max-w-[560px] w-full h-full relative">
+        <div className="max-w-[560px] w-full h-full relative">
           {children}
         </div>
       </div>
