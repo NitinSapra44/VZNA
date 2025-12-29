@@ -54,7 +54,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       
       // SWIPE DETECTION - Key for TikTok feel
       longSwipesRatio={0.5} // Lower = easier to trigger full swipe
-      longSwipesMs={100} // Faster detection
+      longSwipesMs={300} // Faster detection
       shortSwipes={true}
       
       followFinger={true}
