@@ -1,13 +1,15 @@
 "use client";
-import { useRef, useEffect, useMemo, useCallback } from "react";
+import { useRef, useEffect, useMemo, useCallback, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Virtual, Mousewheel } from "swiper/modules";
+import { Virtual, Mousewheel, EffectCreative } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/virtual";
+import "swiper/css/effect-creative";
 
 export default function VerticalSnap({ children, isDrawerOpen }) {
   const swiperRef = useRef(null);
   const slides = useMemo(() => children, [children]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (!swiperRef.current) return;
@@ -20,16 +22,34 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
   const handleSwiper = useCallback((swiper) => {
     swiperRef.current = swiper;
+    setActiveIndex(swiper.activeIndex);
+  }, []);
+
+  const handleSlideChange = useCallback((swiper) => {
+    setActiveIndex(swiper.activeIndex);
   }, []);
 
   return (
     <Swiper
       direction="vertical"
-      modules={[Virtual, Mousewheel]}
+      modules={[Virtual, Mousewheel, EffectCreative]}
       slidesPerView={1}
 
+      // SMOOTH CREATIVE EFFECT
+      effect="creative"
+      creativeEffect={{
+        prev: {
+          translate: [0, "-100%", -400],
+          opacity: 0.8,
+        },
+        next: {
+          translate: [0, "100%", -400],
+          opacity: 0.8,
+        },
+      }}
+
       // SMOOTH TRANSITION
-      speed={350}
+      speed={400}
 
       // VIRTUAL SLIDES FOR PERFORMANCE
       virtual={{
@@ -75,6 +95,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       lazy={true}
 
       onSwiper={handleSwiper}
+      onSlideChange={handleSlideChange}
 
       className="w-full h-full"
       style={{
@@ -88,8 +109,20 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
           key={i}
           virtualIndex={i}
           className="w-full h-full"
+          style={{
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+          }}
         >
-          {child}
+          <div
+            className="w-full h-full"
+            style={{
+              opacity: Math.abs(i - activeIndex) <= 1 ? 1 : 0,
+              transform: `scale(${i === activeIndex ? 1 : 0.95})`,
+              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
+          >
+            {child}
+          </div>
         </SwiperSlide>
       ))}
     </Swiper>
