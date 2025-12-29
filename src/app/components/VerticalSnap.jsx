@@ -53,7 +53,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       threshold={0} // No threshold = immediate response
       
       // 50% THRESHOLD
-      longSwipesRatio={0.5}
+      longSwipesRatio={0.2}
       longSwipesMs={300}
       shortSwipes={false}
       
