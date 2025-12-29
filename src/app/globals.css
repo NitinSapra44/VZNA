@@ -25,3 +25,32 @@ html, body {
 button {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Add to your global CSS or a module */
+.swiper {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.swiper-wrapper {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  /* Snappy easing curve */
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+
+.swiper-slide {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Prevent paint flicker */
+.swiper-slide-active,
+.swiper-slide-next,
+.swiper-slide-prev {
+  will-change: transform;
+}

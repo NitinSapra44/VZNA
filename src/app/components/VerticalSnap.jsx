@@ -13,10 +13,8 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     if (!swiperRef.current) return;
     if (isDrawerOpen) {
       swiperRef.current.disable();
-      swiperRef.current.allowTouchMove = false;
     } else {
       swiperRef.current.enable();
-      swiperRef.current.allowTouchMove = true;
     }
   }, [isDrawerOpen]);
 
@@ -30,61 +28,71 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       modules={[Virtual]}
       slidesPerView={1}
       
-      // SNAPPIER SPEED - TikTok uses ~300ms with aggressive easing
-      speed={300}
-      
-      // CSS easing for that "snap" feel - aggressive ease-out
-      cssMode={false}
+      // FASTER TRANSITION
+      speed={200}
       
       loop={true}
       loopAdditionalSlides={1}
-      loopPreventsSliding={false}
       
       virtual={{
         enabled: true,
-        addSlidesBefore: 2,
-        addSlidesAfter: 2,
-        cache: true, // Enable cache for smoother transitions
+        addSlidesBefore: 1,
+        addSlidesAfter: 1,
+        cache: true,
       }}
       
-      // TOUCH SETTINGS - More responsive like TikTok
-      touchRatio={1.5} // Increased - more responsive to finger movement
-      touchAngle={60} // Wider angle tolerance for vertical swipes
-      threshold={5} // Slightly higher to prevent accidental swipes
-      
-      // SWIPE DETECTION - Key for TikTok feel
-      longSwipesRatio={0.5} // Lower = easier to trigger full swipe
-      longSwipesMs={300} // Faster detection
-      shortSwipes={true}
-      
-      followFinger={true}
-      allowTouchMove={!isDrawerOpen}
-      simulateTouch={true}
+      // IMMEDIATE RESPONSE - Key for removing lag
       touchStartPreventDefault={false}
-      passiveListeners={true}
+      touchStartForcePreventDefault={false}
+      touchMoveStopPropagation={false}
+      preventInteractionOnTransition={false}
       
-      // RESISTANCE - Bouncy edge feel
-      resistance={true}
-      resistanceRatio={0.65} // Lower = more resistance at edges (bouncier)
+      // TOUCH SETTINGS
+      touchRatio={1}
+      touchAngle={45}
+      threshold={0} // No threshold = immediate response
       
-      // MOMENTUM - Important for snap feel
+      // 50% THRESHOLD
+      longSwipesRatio={0.5}
+      longSwipesMs={300}
+      shortSwipes={false}
+      
+      // CRITICAL: These improve responsiveness
+      followFinger={true}
+      watchSlidesProgress={true}
+      
+      allowTouchMove={!isDrawerOpen}
+      
+      // REMOVE RESISTANCE for snappier feel
+      resistance={false}
+      
       freeMode={false}
       
-      // EDGE SWIPE
-      edgeSwipeDetection={true}
-      edgeSwipeThreshold={20}
-      
+      // PERFORMANCE
+      watchOverflow={false}
       updateOnWindowResize={false}
+      resizeObserver={false}
+      observer={false}
+      
       onSwiper={handleSwiper}
+      
+      // USE GPU ACCELERATION
+      cssMode={false}
       
       className="w-full h-full"
       style={{
         width: "100%",
         height: "100%",
+        willChange: "transform",
       }}
     >
       {slides.map((child, i) => (
-        <SwiperSlide key={i} virtualIndex={i} className="w-full h-full">
+        <SwiperSlide 
+          key={i} 
+          virtualIndex={i} 
+          className="w-full h-full"
+          style={{ willChange: "transform" }}
+        >
           {child}
         </SwiperSlide>
       ))}
