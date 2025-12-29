@@ -55,7 +55,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       // 50% THRESHOLD
       longSwipesRatio={0.2}
       longSwipesMs={300}
-      shortSwipes={false}
+      shortSwipes={true}
       
       // CRITICAL: These improve responsiveness
       followFinger={true}
