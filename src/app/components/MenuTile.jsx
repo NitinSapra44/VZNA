@@ -27,7 +27,7 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
       {/* Background - must start from absolute top */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ 
+        style={{
           backgroundImage: `url(${item.image_url})`,
           top: 0,
           left: 0,
@@ -35,9 +35,6 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
           bottom: 0,
         }}
       />
-
-      {/* Dark Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
       {/* Text */}
       <div className="absolute bottom-24 left-6 text-white max-w-md">
