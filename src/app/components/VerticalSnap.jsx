@@ -118,7 +118,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
             style={{
               opacity: Math.abs(i - activeIndex) <= 1 ? 1 : 0,
               transform: `scale(${i === activeIndex ? 1 : 0.95})`,
-              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+              transition: "all 0.4s ease",
             }}
           >
             {child}
