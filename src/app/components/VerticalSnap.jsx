@@ -1,8 +1,9 @@
 "use client";
 import { useRef, useEffect, useMemo, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Mousewheel } from "swiper/modules";
+import { Virtual, Mousewheel } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/virtual";
 
 export default function VerticalSnap({ children, isDrawerOpen }) {
   const swiperRef = useRef(null);
@@ -24,47 +25,54 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
   return (
     <Swiper
       direction="vertical"
-      modules={[Mousewheel]}
+      modules={[Virtual, Mousewheel]}
       slidesPerView={1}
 
-      // TIKTOK-LIKE SETTINGS
-      speed={300} // Smooth transition like TikTok
+      // SMOOTH TRANSITION
+      speed={350}
 
-      // NO LOOP - TikTok doesn't loop back
-      loop={false}
+      // VIRTUAL SLIDES FOR PERFORMANCE
+      virtual={{
+        enabled: true,
+        addSlidesBefore: 2,
+        addSlidesAfter: 2,
+      }}
 
-      // MOUSEWHEEL SUPPORT
+      // MOUSEWHEEL
       mousewheel={{
         forceToAxis: true,
         sensitivity: 1,
-        releaseOnEdges: false,
+        releaseOnEdges: true,
       }}
 
-      // TOUCH RESPONSE
-      touchStartPreventDefault={false}
-      touchStartForcePreventDefault={false}
-      preventInteractionOnTransition={true} // Prevent multiple swipes during transition
+      // CRITICAL: PREVENT DEFAULT TO AVOID PAGE RELOAD
+      touchStartPreventDefault={true}
+      passiveListeners={false}
 
-      // SWIPE THRESHOLD - Like TikTok (needs ~50% swipe or velocity)
-      threshold={5} // Small initial threshold to start tracking
-      longSwipesRatio={0.5} // Need 50% swipe to trigger
-      longSwipesMs={300} // Time window for swipe
-      shortSwipes={true} // Allow fast swipes
+      // PREVENT INTERACTION DURING TRANSITION
+      preventInteractionOnTransition={true}
 
-      // FOLLOW FINGER SMOOTHLY
+      // SWIPE SETTINGS - TikTok style
+      threshold={10}
+      longSwipesRatio={0.5}
+      longSwipesMs={300}
+      shortSwipes={true}
+
+      // SMOOTH FOLLOW
       followFinger={true}
-      touchRatio={1} // 1:1 touch movement
-      touchAngle={45} // Vertical swipe detection
+      touchRatio={1}
+      touchAngle={45}
 
-      // RESISTANCE AT EDGES (like TikTok)
+      // RESISTANCE
       resistance={true}
-      resistanceRatio={0.85} // Strong resistance at boundaries
+      resistanceRatio={0.85}
 
       allowTouchMove={!isDrawerOpen}
 
       // PERFORMANCE
       watchSlidesProgress={true}
-      watchOverflow={true}
+      preloadImages={false}
+      lazy={true}
 
       onSwiper={handleSwiper}
 
@@ -72,11 +80,13 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       style={{
         width: "100%",
         height: "100%",
+        touchAction: "pan-y",
       }}
     >
       {slides.map((child, i) => (
         <SwiperSlide
           key={i}
+          virtualIndex={i}
           className="w-full h-full"
         >
           {child}
