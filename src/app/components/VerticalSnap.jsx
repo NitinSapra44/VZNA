@@ -1,6 +1,5 @@
 "use client";
-
-import { useRef, useEffect, useMemo, useCallback, useState } from "react";
+import { useRef, useEffect, useMemo, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Virtual, Mousewheel } from "swiper/modules";
 import "swiper/css";
@@ -9,12 +8,9 @@ import "swiper/css/virtual";
 export default function VerticalSnap({ children, isDrawerOpen }) {
   const swiperRef = useRef(null);
   const slides = useMemo(() => children, [children]);
-  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Enable / disable swiper when drawer opens
   useEffect(() => {
     if (!swiperRef.current) return;
-
     if (isDrawerOpen) {
       swiperRef.current.disable();
     } else {
@@ -24,22 +20,6 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
   const handleSwiper = useCallback((swiper) => {
     swiperRef.current = swiper;
-    setActiveIndex(swiper.activeIndex);
-  }, []);
-
-  // TikTok-style snap logic
-  const handleSlideChange = useCallback((swiper) => {
-    const swipeDistance = swiper.touches.diff;
-
-    // Fast swipe → instant snap (no animation)
-    if (Math.abs(swipeDistance) > 60) {
-      swiper.setTransition(0);
-    } else {
-      // Slow swipe → smooth snap
-      swiper.setTransition(180);
-    }
-
-    setActiveIndex(swiper.activeIndex);
   }, []);
 
   return (
@@ -48,49 +28,58 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       modules={[Virtual, Mousewheel]}
       slidesPerView={1}
 
-      /* TikTok snap speed */
-      speed={180}
+      // SMOOTH TRANSITION
+      speed={350}
 
-      /* IMPORTANT: no follow animation while dragging */
-      followFinger={false}
+      // VIRTUAL SLIDES FOR PERFORMANCE
+      virtual={{
+        enabled: true,
+        addSlidesBefore: 2,
+        addSlidesAfter: 2,
+      }}
 
-      /* Strong commit swipe */
-      threshold={25}
-      longSwipesRatio={0.15}
-      longSwipesMs={150}
-      shortSwipes={true}
-
-      /* No rubber-band */
-      resistance={false}
-
-      /* Mouse wheel for desktop */
+      // MOUSEWHEEL
       mousewheel={{
         forceToAxis: true,
         sensitivity: 1,
+        releaseOnEdges: true,
       }}
 
-      /* Virtual slides for performance */
-      virtual={{
-        enabled: true,
-        addSlidesBefore: 1,
-        addSlidesAfter: 1,
-      }}
-
-      /* Prevent conflicts */
-      preventInteractionOnTransition={true}
+      // CRITICAL: PREVENT DEFAULT TO AVOID PAGE RELOAD
       touchStartPreventDefault={true}
       passiveListeners={false}
 
-      /* Lock when drawer open */
+      // PREVENT INTERACTION DURING TRANSITION
+      preventInteractionOnTransition={true}
+
+      // SWIPE SETTINGS - TikTok style
+      threshold={10}
+      longSwipesRatio={0.5}
+      longSwipesMs={300}
+      shortSwipes={true}
+
+      // SMOOTH FOLLOW
+      followFinger={true}
+      touchRatio={1}
+      touchAngle={45}
+
+      // RESISTANCE
+      resistance={true}
+      resistanceRatio={0.85}
+
       allowTouchMove={!isDrawerOpen}
 
+      // PERFORMANCE
+      watchSlidesProgress={true}
+      preloadImages={false}
+      lazy={true}
+
       onSwiper={handleSwiper}
-      onSlideChange={handleSlideChange}
 
       className="w-full h-full"
       style={{
         width: "100%",
-        height: "100vh",
+        height: "100%",
         touchAction: "pan-y",
       }}
     >
@@ -100,10 +89,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
           virtualIndex={i}
           className="w-full h-full"
         >
-          {/* Fullscreen slide — no scaling, no opacity tricks */}
-          <div className="w-full h-full">
-            {child}
-          </div>
+          {child}
         </SwiperSlide>
       ))}
     </Swiper>
