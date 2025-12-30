@@ -20,6 +20,10 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
   const handleSwiper = useCallback((swiper) => {
     swiperRef.current = swiper;
+    // Apply linear timing for constant-speed transitions
+    if (swiper.wrapperEl) {
+      swiper.wrapperEl.style.transitionTimingFunction = 'linear';
+    }
   }, []);
 
   return (
@@ -76,7 +80,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       onSwiper={handleSwiper}
 
-      className="w-full h-full"
+      className="w-full h-full vertical-snap-linear"
       style={{
         width: "100%",
         height: "100%",

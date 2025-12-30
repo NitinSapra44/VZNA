@@ -26,7 +26,7 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Add to your global CSS or a module */
+/* Swiper base styles */
 .swiper {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
@@ -37,8 +37,6 @@ button {
 .swiper-wrapper {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
-  /* Snappy easing curve */
-  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 
 .swiper-slide {
@@ -53,4 +51,14 @@ button {
 .swiper-slide-next,
 .swiper-slide-prev {
   will-change: transform;
+}
+
+/* LINEAR MODE - Constant speed, mechanical feel */
+.vertical-snap-linear .swiper-wrapper {
+  transition-timing-function: linear !important;
+}
+
+/* EASED MODE - TikTok/Reels smooth acceleration */
+.vertical-snap-eased .swiper-wrapper {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
