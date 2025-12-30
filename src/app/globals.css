@@ -58,7 +58,17 @@ button {
   transition-timing-function: linear !important;
 }
 
-/* EASED MODE - Strong ease-in-out (slow start, slow end, fast middle) */
+/* EASE-IN MODE - Slow start, fast end */
+.vertical-snap-ease-in .swiper-wrapper {
+  transition-timing-function: ease-in !important;
+}
+
+/* EASE-OUT MODE - Fast start, slow end */
+.vertical-snap-ease-out .swiper-wrapper {
+  transition-timing-function: ease-out !important;
+}
+
+/* EASE-IN-OUT MODE - Slow start, fast middle, slow end */
 .vertical-snap-eased .swiper-wrapper {
   transition-timing-function: ease-in-out !important;
 }
