@@ -44,8 +44,8 @@ export default function VerticalSnapEased({ children, isDrawerOpen }) {
       // Small delay to ensure we're in snap phase
       scrollTimeoutRef.current = setTimeout(() => {
         isScrollingRef.current = false;
-        // Apply smooth easing curve for the final snap
-        swiper.wrapperEl.style.transitionTimingFunction = 'cubic-bezier(0.22, 1, 0.36, 1)';
+        // Apply ease-in-out for the final snap (slow start, fast middle, slow end)
+        swiper.wrapperEl.style.transitionTimingFunction = 'ease-in-out';
       }, 10);
     });
 
@@ -57,9 +57,9 @@ export default function VerticalSnapEased({ children, isDrawerOpen }) {
       // Linear during scroll
       swiper.wrapperEl.style.transitionTimingFunction = 'linear';
 
-      // Eased when scroll stops
+      // Ease-in-out when scroll stops
       scrollTimeoutRef.current = setTimeout(() => {
-        swiper.wrapperEl.style.transitionTimingFunction = 'cubic-bezier(0.22, 1, 0.36, 1)';
+        swiper.wrapperEl.style.transitionTimingFunction = 'ease-in-out';
       }, 50);
     });
   }, []);

@@ -58,7 +58,7 @@ button {
   transition-timing-function: linear !important;
 }
 
-/* EASED MODE - TikTok/Reels smooth acceleration */
+/* EASED MODE - Strong ease-in-out (slow start, slow end, fast middle) */
 .vertical-snap-eased .swiper-wrapper {
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition-timing-function: ease-in-out !important;
 }
