@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import AppViewport from "@/app/components/AppViewport";
-import VerticalSnapEased from "@/app/components/VerticalSnapEased";
+import VerticalSnapEaseOut150 from "@/app/components/VerticalSnapEaseOut150";
 import MenuTile from "@/app/components/MenuTile";
 import MenuDropdown from "@/app/components/MenuDropdown";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
@@ -129,7 +129,7 @@ export default function MenuPage() {
 
         {/* Items View */}
         {currentItems.length > 0 ? (
-          <VerticalSnapEased ref={verticalSnapRef} isDrawerOpen={drawerOpen}>
+          <VerticalSnapEaseOut150 ref={verticalSnapRef} isDrawerOpen={drawerOpen}>
             {currentItems.map((item, index) => (
               <MenuTile
                 key={item.id}
@@ -140,7 +140,7 @@ export default function MenuPage() {
                 verticalSnapRef={verticalSnapRef}   // ✅ SEND REF HERE
               />
             ))}
-          </VerticalSnapEased>
+          </VerticalSnapEaseOut150>
         ) : (
           <div className="h-full flex items-center justify-center">
             <div className="text-center p-8">
