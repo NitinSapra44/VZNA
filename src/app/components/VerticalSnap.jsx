@@ -1,199 +1,183 @@
 "use client";
-import { useRef, useEffect, useMemo, useCallback, useState } from "react";
+import { useRef, useEffect, useMemo, useCallback } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Virtual, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/virtual";
 
 export default function VerticalSnap({ children, isDrawerOpen }) {
-  const containerRef = useRef(null);
-  const wrapperRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [containerHeight, setContainerHeight] = useState(0);
-
+  const swiperRef = useRef(null);
   const touchRef = useRef({
     startY: 0,
     startTime: 0,
     lastY: 0,
     lastTime: 0,
-    lastVelocity: 0,
-    startTranslate: 0,
+    velocities: [],
+    startIndex: 0,
   });
 
-  const slides = useMemo(
-    () => (Array.isArray(children) ? children : [children]),
-    [children]
-  );
-  const slideCount = slides.length;
+  const slides = useMemo(() => children, [children]);
 
-  // Set container height on mount and resize
   useEffect(() => {
-    const updateHeight = () => {
-      if (containerRef.current) {
-        const height = containerRef.current.clientHeight;
-        setContainerHeight(height);
-        setTranslateY(-currentIndex * height);
-      }
+    if (!swiperRef.current) return;
+    if (isDrawerOpen) {
+      swiperRef.current.disable();
+    } else {
+      swiperRef.current.enable();
+    }
+  }, [isDrawerOpen]);
+
+  const handleSwiper = useCallback((swiper) => {
+    swiperRef.current = swiper;
+  }, []);
+
+  const getEndVelocity = useCallback(() => {
+    const velocities = touchRef.current.velocities;
+    if (velocities.length === 0) return 0;
+    const recent = velocities.slice(-4);
+    return recent.reduce((a, b) => a + b, 0) / recent.length;
+  }, []);
+
+  const handleTouchStart = useCallback((swiper, e) => {
+    const touch = e.touches ? e.touches[0] : e;
+    
+    // Remove any transition during touch
+    if (swiper.wrapperEl) {
+      swiper.wrapperEl.style.transitionDuration = "0ms";
+    }
+    
+    touchRef.current = {
+      startY: touch.clientY,
+      startTime: Date.now(),
+      lastY: touch.clientY,
+      lastTime: Date.now(),
+      velocities: [],
+      startIndex: swiper.activeIndex,
     };
+  }, []);
 
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [currentIndex]);
+  const handleTouchMove = useCallback((swiper, e) => {
+    const touch = e.touches ? e.touches[0] : e;
+    const now = Date.now();
+    const dt = now - touchRef.current.lastTime;
 
-  const handleTouchStart = useCallback(
-    (e) => {
-      if (isDrawerOpen || !containerHeight) return;
+    if (dt > 10) {
+      const velocity = (touch.clientY - touchRef.current.lastY) / dt;
+      touchRef.current.velocities.push(velocity);
 
-      const touch = e.touches[0];
-
-      touchRef.current = {
-        startY: touch.clientY,
-        startTime: Date.now(),
-        lastY: touch.clientY,
-        lastTime: Date.now(),
-        lastVelocity: 0,
-        startTranslate: -currentIndex * containerHeight,
-      };
-
-      setIsDragging(true);
-    },
-    [currentIndex, isDrawerOpen, containerHeight]
-  );
-
-  const handleTouchMove = useCallback(
-    (e) => {
-      if (isDrawerOpen || !isDragging || !containerHeight) return;
-
-      const touch = e.touches[0];
-      const now = Date.now();
-      const deltaY = touch.clientY - touchRef.current.startY;
-      const dt = now - touchRef.current.lastTime;
-
-      if (dt > 0) {
-        touchRef.current.lastVelocity =
-          (touch.clientY - touchRef.current.lastY) / dt;
+      if (touchRef.current.velocities.length > 10) {
+        touchRef.current.velocities.shift();
       }
 
       touchRef.current.lastY = touch.clientY;
       touchRef.current.lastTime = now;
+    }
+  }, []);
 
-      let newTranslate = touchRef.current.startTranslate + deltaY;
-      const minTranslate = -(slideCount - 1) * containerHeight;
-      const maxTranslate = 0;
+  const handleTouchEnd = useCallback(
+    (swiper) => {
+      const endVelocity = getEndVelocity();
+      const totalDistance = touchRef.current.lastY - touchRef.current.startY;
+      const totalTime = Date.now() - touchRef.current.startTime;
 
-      // Resistance at edges
-      if (newTranslate > maxTranslate) {
-        const over = newTranslate - maxTranslate;
-        newTranslate = maxTranslate + over * 0.2;
-      } else if (newTranslate < minTranslate) {
-        const over = newTranslate - minTranslate;
-        newTranslate = minTranslate + over * 0.2;
+      const absVelocity = Math.abs(endVelocity);
+      const absDistance = Math.abs(totalDistance);
+      const slideHeight = swiper.height || window.innerHeight;
+
+      // Direction: negative = swipe up = next slide
+      const direction = totalDistance < 0 ? 1 : -1;
+
+      let shouldSlide = false;
+
+      // CASE 1: Fast flick
+      if (totalTime < 300 && absVelocity > 0.2) {
+        shouldSlide = true;
+      }
+      // CASE 2: Passed 50% threshold
+      else if (absDistance > slideHeight * 0.5) {
+        shouldSlide = true;
+      }
+      // CASE 3: Long drag + flick at end
+      else if (totalTime >= 300 && absVelocity > 0.4) {
+        shouldSlide = true;
       }
 
-      setTranslateY(newTranslate);
-    },
-    [isDragging, isDrawerOpen, slideCount, containerHeight]
-  );
+      const startIndex = touchRef.current.startIndex;
+      const targetIndex = startIndex + direction;
 
-  const handleTouchEnd = useCallback(() => {
-    if (!isDragging || !containerHeight) return;
+      // Calculate remaining distance to animate
+      const currentTranslate = swiper.getTranslate();
+      const targetSlideIndex = shouldSlide && targetIndex >= 0 && targetIndex < slides.length
+        ? targetIndex
+        : startIndex;
+      const targetTranslate = -targetSlideIndex * slideHeight;
+      const remainingDistance = Math.abs(targetTranslate - currentTranslate);
 
-    setIsDragging(false);
+      // Calculate duration based on remaining distance (constant speed)
+      // Speed: ~1000px per 150ms = 6.67 px/ms
+      const speed = 6.67;
+      const duration = Math.min(Math.max(remainingDistance / speed, 50), 300);
 
-    const velocity = touchRef.current.lastVelocity;
-    const totalDistance = touchRef.current.lastY - touchRef.current.startY;
-    const totalTime = Date.now() - touchRef.current.startTime;
-
-    const absVelocity = Math.abs(velocity);
-    const absDistance = Math.abs(totalDistance);
-    const direction = totalDistance < 0 ? 1 : -1;
-
-    let newIndex = currentIndex;
-
-    // Fast flick (< 250ms with velocity)
-    if (totalTime < 250 && absVelocity > 0.2) {
-      newIndex = currentIndex + direction;
-    }
-    // 50% threshold
-    else if (absDistance > containerHeight * 0.5) {
-      newIndex = currentIndex + direction;
-    }
-    // Long drag + flick at end
-    else if (absVelocity > 0.4) {
-      newIndex = currentIndex + direction;
-    }
-
-    // Clamp
-    newIndex = Math.max(0, Math.min(slideCount - 1, newIndex));
-
-    setCurrentIndex(newIndex);
-    setTranslateY(-newIndex * containerHeight);
-  }, [isDragging, currentIndex, slideCount, containerHeight]);
-
-  // Mouse wheel
-  const wheelLockRef = useRef(false);
-  const handleWheel = useCallback(
-    (e) => {
-      if (isDrawerOpen || isDragging || wheelLockRef.current) return;
-
-      e.preventDefault();
-
-      const direction = e.deltaY > 0 ? 1 : -1;
-      const newIndex = Math.max(
-        0,
-        Math.min(slideCount - 1, currentIndex + direction)
-      );
-
-      if (newIndex !== currentIndex) {
-        wheelLockRef.current = true;
-        setCurrentIndex(newIndex);
-        setTranslateY(-newIndex * containerHeight);
-
-        setTimeout(() => {
-          wheelLockRef.current = false;
-        }, 400);
+      // Apply smooth transition from current position
+      if (swiper.wrapperEl) {
+        swiper.wrapperEl.style.transitionDuration = `${duration}ms`;
+        swiper.wrapperEl.style.transitionTimingFunction = "ease-out";
       }
+
+      swiper.slideTo(targetSlideIndex, duration);
     },
-    [currentIndex, slideCount, isDrawerOpen, isDragging, containerHeight]
+    [slides.length, getEndVelocity]
   );
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        touchAction: "none",
-        position: "relative",
+    <Swiper
+      direction="vertical"
+      modules={[Virtual, Mousewheel]}
+      slidesPerView={1}
+      speed={150}
+      virtual={{
+        enabled: true,
+        addSlidesBefore: 2,
+        addSlidesAfter: 2,
       }}
+      mousewheel={{
+        forceToAxis: true,
+        sensitivity: 1,
+        releaseOnEdges: true,
+      }}
+      touchStartPreventDefault={true}
+      passiveListeners={false}
+      preventInteractionOnTransition={true}
+      threshold={5}
+      followFinger={true}
+      touchRatio={1}
+      touchAngle={45}
+      longSwipes={false}
+      shortSwipes={false}
+      resistance={true}
+      resistanceRatio={0.85}
+      allowTouchMove={!isDrawerOpen}
+      watchSlidesProgress={true}
+      preloadImages={false}
+      lazy={true}
+      // CRITICAL: Disable Swiper's built-in transition handling
+      cssMode={false}
+      onSwiper={handleSwiper}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
-      onWheel={handleWheel}
+      className="w-full h-full"
+      style={{
+        width: "100%",
+        height: "100%",
+        touchAction: "none",
+      }}
     >
-      <div
-        ref={wrapperRef}
-        style={{
-          width: "100%",
-          transform: `translate3d(0, ${translateY}px, 0)`,
-          transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          willChange: "transform",
-        }}
-      >
-        {slides.map((child, i) => (
-          <div
-            key={i}
-            style={{
-              width: "100%",
-              height: containerHeight || "100vh",
-              flexShrink: 0,
-            }}
-          >
-            {child}
-          </div>
-        ))}
-      </div>
-    </div>
+      {slides.map((child, i) => (
+        <SwiperSlide key={i} virtualIndex={i} className="w-full h-full">
+          {child}
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 }
