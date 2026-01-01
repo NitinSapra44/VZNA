@@ -29,6 +29,9 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
   const handleSwiper = useCallback((swiper) => {
     swiperRef.current = swiper;
+    if (swiper.wrapperEl) {
+      swiper.wrapperEl.style.transitionTimingFunction = "linear";
+    }
   }, []);
 
   const getEndVelocity = useCallback(() => {
@@ -40,12 +43,6 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
   const handleTouchStart = useCallback((swiper, e) => {
     const touch = e.touches ? e.touches[0] : e;
-    
-    // Remove any transition during touch
-    if (swiper.wrapperEl) {
-      swiper.wrapperEl.style.transitionDuration = "0ms";
-    }
-    
     touchRef.current = {
       startY: touch.clientY,
       startTime: Date.now(),
@@ -89,15 +86,15 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       let shouldSlide = false;
 
-      // CASE 1: Fast flick
+      // CASE 1: Fast flick (< 300ms) with some velocity
       if (totalTime < 300 && absVelocity > 0.2) {
         shouldSlide = true;
       }
-      // CASE 2: Passed 50% threshold
+      // CASE 2: Long swipe passed 50% threshold
       else if (absDistance > slideHeight * 0.5) {
         shouldSlide = true;
       }
-      // CASE 3: Long drag + flick at end
+      // CASE 3: Long drag + flick at end (TikTok style!)
       else if (totalTime >= 300 && absVelocity > 0.4) {
         shouldSlide = true;
       }
@@ -105,29 +102,20 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const startIndex = touchRef.current.startIndex;
       const targetIndex = startIndex + direction;
 
-      // Calculate remaining distance to animate
-      const currentTranslate = swiper.getTranslate();
-      const targetSlideIndex = shouldSlide && targetIndex >= 0 && targetIndex < slides.length
-        ? targetIndex
-        : startIndex;
-      const targetTranslate = -targetSlideIndex * slideHeight;
-      const remainingDistance = Math.abs(targetTranslate - currentTranslate);
-
-      // Calculate duration based on remaining distance (constant speed)
-      // Speed: ~1000px per 150ms = 6.67 px/ms
-      const speed = 6.67;
-      const duration = Math.min(Math.max(remainingDistance / speed, 50), 300);
-
-      // Apply smooth transition from current position
-      if (swiper.wrapperEl) {
-        swiper.wrapperEl.style.transitionDuration = `${duration}ms`;
-        swiper.wrapperEl.style.transitionTimingFunction = "ease-out";
+      if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
+        swiper.slideTo(targetIndex, 150);
+      } else {
+        // Snap back to start
+        swiper.slideTo(startIndex, 150);
       }
-
-      swiper.slideTo(targetSlideIndex, duration);
     },
     [slides.length, getEndVelocity]
   );
+
+  // Prevent Swiper's default slide decision
+  const handleSlideChangeTransitionStart = useCallback(() => {
+    // We handle transitions ourselves in handleTouchEnd
+  }, []);
 
   return (
     <Swiper
@@ -148,29 +136,30 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       touchStartPreventDefault={true}
       passiveListeners={false}
       preventInteractionOnTransition={true}
+      // Let finger follow work
       threshold={5}
       followFinger={true}
       touchRatio={1}
       touchAngle={45}
+      // Disable Swiper's auto slide decision
       longSwipes={false}
       shortSwipes={false}
+      // Resistance at edges
       resistance={true}
       resistanceRatio={0.85}
       allowTouchMove={!isDrawerOpen}
       watchSlidesProgress={true}
       preloadImages={false}
       lazy={true}
-      // CRITICAL: Disable Swiper's built-in transition handling
-      cssMode={false}
       onSwiper={handleSwiper}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="w-full h-full"
+      className="w-full h-full vertical-snap-linear"
       style={{
         width: "100%",
         height: "100%",
-        touchAction: "none",
+        touchAction: "pan-y",
       }}
     >
       {slides.map((child, i) => (
