@@ -58,7 +58,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       // SWIPE SETTINGS - Responsive to both fast and slow swipes
       threshold={5}
-      longSwipesRatio={0.15}  // Only need 15% swipe distance to trigger
+      longSwipesRatio={0.5}  // Only need 15% swipe distance to trigger
       longSwipesMs={1000}  // Allow longer swipe duration (1 second)
       shortSwipes={true}
 
