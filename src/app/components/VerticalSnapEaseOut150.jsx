@@ -79,7 +79,7 @@ export default function VerticalSnapEaseOut150({ children, isDrawerOpen }) {
       slidesPerView={1}
 
       // SMOOTH TRANSITION with easing curve
-      speed={150}
+      speed={300}
 
       // VIRTUAL SLIDES FOR PERFORMANCE
       virtual={{

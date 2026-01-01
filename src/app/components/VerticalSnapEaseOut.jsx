@@ -81,6 +81,12 @@ export default function VerticalSnapEaseOut({ children, isDrawerOpen }) {
       // SMOOTH TRANSITION with easing curve
       speed={200}
 
+      // FREE MODE - No snapping, free scrolling
+      freeMode={true}
+      freeModeMomentum={true}
+      freeModeMomentumRatio={0.5}
+      freeModeMomentumVelocityRatio={0.5}
+
       // VIRTUAL SLIDES FOR PERFORMANCE
       virtual={{
         enabled: true,
@@ -100,13 +106,7 @@ export default function VerticalSnapEaseOut({ children, isDrawerOpen }) {
       passiveListeners={false}
 
       // PREVENT INTERACTION DURING TRANSITION
-      preventInteractionOnTransition={true}
-
-      // SWIPE SETTINGS - TikTok style
-      threshold={10}
-      longSwipesRatio={0.5}
-      longSwipesMs={300}
-      shortSwipes={true}
+      preventInteractionOnTransition={false}
 
       // SMOOTH FOLLOW - immediate response while touching
       followFinger={true}
