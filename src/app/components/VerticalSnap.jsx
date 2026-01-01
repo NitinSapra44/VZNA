@@ -56,10 +56,10 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       // PREVENT INTERACTION DURING TRANSITION
       preventInteractionOnTransition={true}
 
-      // SWIPE SETTINGS - TikTok style
-      threshold={10}
-      longSwipesRatio={0.5}
-      longSwipesMs={300}
+      // SWIPE SETTINGS - Responsive to both fast and slow swipes
+      threshold={5}
+      longSwipesRatio={0.15}  // Only need 15% swipe distance to trigger
+      longSwipesMs={1000}  // Allow longer swipe duration (1 second)
       shortSwipes={true}
 
       // SMOOTH FOLLOW
