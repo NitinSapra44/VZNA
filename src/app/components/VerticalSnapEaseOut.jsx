@@ -84,8 +84,9 @@ export default function VerticalSnapEaseOut({ children, isDrawerOpen }) {
       // FREE MODE - No snapping, free scrolling
       freeMode={true}
       freeModeMomentum={true}
-      freeModeMomentumRatio={0.5}
-      freeModeMomentumVelocityRatio={0.5}
+      freeModeMomentumRatio={1}
+      freeModeMomentumVelocityRatio={1}
+      freeModeMomentumBounce={false}
 
       // VIRTUAL SLIDES FOR PERFORMANCE
       virtual={{
@@ -105,9 +106,6 @@ export default function VerticalSnapEaseOut({ children, isDrawerOpen }) {
       touchStartPreventDefault={true}
       passiveListeners={false}
 
-      // PREVENT INTERACTION DURING TRANSITION
-      preventInteractionOnTransition={false}
-
       // SMOOTH FOLLOW - immediate response while touching
       followFinger={true}
       touchRatio={1}
@@ -123,6 +121,10 @@ export default function VerticalSnapEaseOut({ children, isDrawerOpen }) {
       watchSlidesProgress={true}
       preloadImages={false}
       lazy={true}
+
+      // Disable all snap-related features
+      slidesPerGroup={1}
+      centeredSlides={false}
 
       onSwiper={handleSwiper}
 
