@@ -60,7 +60,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       threshold={5}
       longSwipesRatio={0.5}  // Need 50% swipe distance to trigger
       longSwipesMs={3000}  // Allow slow swipes up to 3 seconds
-      shortSwipes={true}
+      shortSwipes={false}  // Disable quick flicks, enforce 50% rule
 
       // SMOOTH FOLLOW
       followFinger={true}
