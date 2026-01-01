@@ -33,7 +33,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       slidesPerView={1}
 
       // SMOOTH TRANSITION
-      speed={350}
+      speed={150}
 
       // VIRTUAL SLIDES FOR PERFORMANCE
       virtual={{
