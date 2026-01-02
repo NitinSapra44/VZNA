@@ -103,10 +103,11 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const targetIndex = startIndex + direction;
 
       if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
-        swiper.slideTo(targetIndex, 150);
+        // Smooth transition to next slide
+        swiper.slideTo(targetIndex, 300);
       } else {
-        // Snap back to start
-        swiper.slideTo(startIndex, 150);
+        // Snap back to start smoothly
+        swiper.slideTo(startIndex, 250);
       }
     },
     [slides.length, getEndVelocity]
