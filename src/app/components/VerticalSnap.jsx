@@ -123,7 +123,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       direction="vertical"
       modules={[Virtual, Mousewheel]}
       slidesPerView={1}
-      speed={200}
+      speed={150}
       virtual={{
         enabled: true,
         addSlidesBefore: 2,
