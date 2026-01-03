@@ -103,11 +103,11 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const targetIndex = startIndex + direction;
 
       if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
-        // Fast transition to next slide
-        swiper.slideTo(targetIndex, 150);
+        // Smooth TikTok-like transition
+        swiper.slideTo(targetIndex, 250);
       } else {
-        // Snap back quickly
-        swiper.slideTo(startIndex, 150);
+        // Smooth snap back
+        swiper.slideTo(startIndex, 200);
       }
     },
     [slides.length, getEndVelocity]
@@ -123,7 +123,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       direction="vertical"
       modules={[Virtual, Mousewheel]}
       slidesPerView={1}
-      speed={150}
+      speed={250}
       virtual={{
         enabled: true,
         addSlidesBefore: 2,
