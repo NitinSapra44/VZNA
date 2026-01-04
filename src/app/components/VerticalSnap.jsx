@@ -104,10 +104,10 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
 
       if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
         // Smooth TikTok-like transition
-        swiper.slideTo(targetIndex, 250);
+        swiper.slideTo(targetIndex, 150);
       } else {
         // Smooth snap back
-        swiper.slideTo(startIndex, 200);
+        swiper.slideTo(startIndex, 150);
       }
     },
     [slides.length, getEndVelocity]
