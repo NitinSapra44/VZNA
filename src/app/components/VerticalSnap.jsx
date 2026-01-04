@@ -133,6 +133,8 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         forceToAxis: true,
         sensitivity: 1,
         releaseOnEdges: true,
+        thresholdDelta: 50,
+        thresholdTime: 300,
       }}
       touchStartPreventDefault={true}
       passiveListeners={false}
