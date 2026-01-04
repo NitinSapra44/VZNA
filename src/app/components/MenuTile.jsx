@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import ProductDetail from "./ProductDetail";
 
-export default function MenuTile({ item, index, language, onDrawerToggle }) {
+export default function MenuTile({ item, index, language, onDrawerToggle, hideContent = false }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = (e) => {
@@ -37,17 +37,19 @@ export default function MenuTile({ item, index, language, onDrawerToggle }) {
       />
 
       {/* Text */}
-      <div className="absolute bottom-24 left-6 text-white max-w-md">
-        <h1 className="text-base mb-2" style={{ fontFamily: "var(--font-fira-sans)" }}>
-          {title}
-        </h1>
-        <p className="text-base opacity-90" style={{ fontFamily: "var(--font-fira-sans)" }}>
-          {subtitle}
-        </p>
-      </div>
+      {!hideContent && (
+        <div className="absolute bottom-24 left-6 text-white max-w-md">
+          <h1 className="text-base mb-2" style={{ fontFamily: "var(--font-fira-sans)" }}>
+            {title}
+          </h1>
+          <p className="text-base opacity-90" style={{ fontFamily: "var(--font-fira-sans)" }}>
+            {subtitle}
+          </p>
+        </div>
+      )}
 
       {/* Info Button */}
-      {!isOpen && (
+      {!hideContent && !isOpen && (
         <button
           onClick={handleOpen}
           className="absolute bottom-24 right-6 bg-white/95 backdrop-blur-sm text-black z-30 px-8 py-3.5 font-bold rounded-full shadow-2xl hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] active:scale-90 transition-all duration-300 hover:bg-white border-2 border-white/20"

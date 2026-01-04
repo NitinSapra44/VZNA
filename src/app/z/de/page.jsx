@@ -103,18 +103,18 @@ export default function MenuPage() {
     <AppViewport>
       <div className="relative h-full w-full">
 
-        {/* Fixed Logo */}
-        <div className="absolute top-6 left-6 z-50 pointer-events-none">
-          <img 
+        {/* Fixed Logo - Hidden */}
+        {/* <div className="absolute top-6 left-6 z-50 pointer-events-none">
+          <img
             src="/logo.svg"
-            alt="Restaurant Logo" 
+            alt="Restaurant Logo"
             className="h-16 w-auto drop-shadow-lg border-b-2 border-white pb-3"
           />
           <p className="text-white text-xl">Zürich</p>
-        </div>
+        </div> */}
 
-        {/* Dropdown navigation */}
-        <MenuDropdown
+        {/* Dropdown navigation - Hidden */}
+        {/* <MenuDropdown
           isOpen={menuOpen}
           onToggle={() => setMenuOpen(!menuOpen)}
           categories={categories}
@@ -125,7 +125,7 @@ export default function MenuPage() {
           onShowAll={handleShowAll}
           language={lang}
           showSubcategories={showSubcategories}
-        />
+        /> */}
 
         {/* Items View */}
         {currentItems.length > 0 ? (
@@ -138,6 +138,7 @@ export default function MenuPage() {
                 language={lang}
                 onDrawerToggle={setDrawerOpen}
                 verticalSnapRef={verticalSnapRef}   // ✅ SEND REF HERE
+                hideContent={true}  // Hide text and button, show only slide
               />
             ))}
           </VerticalSnap>
