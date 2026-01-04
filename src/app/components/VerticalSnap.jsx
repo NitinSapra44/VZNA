@@ -131,10 +131,11 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       }}
       mousewheel={{
         forceToAxis: true,
-        sensitivity: 1,
-        releaseOnEdges: true,
-        thresholdDelta: 50,
-        thresholdTime: 300,
+        sensitivity: 0.5,
+        releaseOnEdges: false,
+        thresholdDelta: 20,
+        thresholdTime: 500,
+        eventsTarget: 'container',
       }}
       touchStartPreventDefault={true}
       passiveListeners={false}
