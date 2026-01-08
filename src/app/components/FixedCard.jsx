@@ -109,8 +109,8 @@ export default function FixedCard({
               <p className="font-inter font-medium">
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
-              <div className="p-1! rounded-full bg-black/40">
-                <PlusIcon className="w-5 h-5" color="white" />
+              <div className="p-2! rounded-full bg-black/40">
+                <PlusIcon className="w-6 h-6" color="white" />
               </div>
             </div>
           </div>
