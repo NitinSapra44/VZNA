@@ -101,7 +101,7 @@ export default function FixedCard({
               </AnimatePresence>
             </div>
           </div>
-          <div className="absolute right-0 bottom-0 p-5!">
+          <div className="absolute right-0 bottom-0 p-3! ">
             <div
               onClick={handleOpen}
               className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-4 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
