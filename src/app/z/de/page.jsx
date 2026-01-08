@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import AppViewport from "@/app/components/AppViewport";
 import VerticalSnap from "@/app/components/VerticalSnap";
 import MenuTile from "@/app/components/MenuTile";
+import FixedCard from "@/app/components/FixedCard";
 import MenuDropdown from "@/app/components/MenuDropdown";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 import { menuData2 as menuData  } from "@/data/menudata2";
@@ -31,7 +32,7 @@ function sortItems(a, b) {
 }
 
 export default function MenuPage() {
-  const lang = "de";  
+  const lang = "de";
 
   const verticalSnapRef = useRef(null);   // ✅ IMPORTANT
 
@@ -40,6 +41,10 @@ export default function MenuPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [showSubcategories, setShowSubcategories] = useState(false);
   const [currentItems, setCurrentItems] = useState([]);
+
+  // Track current slide and swipe direction for fixed card
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [swipeDirection, setSwipeDirection] = useState(0);
 
   // Track if drawer is open → disable VerticalSnap scroll
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -98,6 +103,11 @@ export default function MenuPage() {
     setSelectedSubcategory(null);
   };
 
+  const handleSlideChange = (index, direction) => {
+    setCurrentSlideIndex(index);
+    setSwipeDirection(direction);
+  };
+
   return (
     <ErrorBoundary>
     <AppViewport>
@@ -129,19 +139,27 @@ export default function MenuPage() {
 
         {/* Items View */}
         {currentItems.length > 0 ? (
-          <VerticalSnap ref={verticalSnapRef} isDrawerOpen={drawerOpen}>
-            {currentItems.map((item, index) => (
-              <MenuTile
-                key={item.id}
-                item={item}
-                index={index}
-                language={lang}
-                onDrawerToggle={setDrawerOpen}
-                verticalSnapRef={verticalSnapRef}   // ✅ SEND REF HERE
-                hideContent={false}  // Hide text and button, show only slide
-              />
-            ))}
-          </VerticalSnap>
+          <>
+            <VerticalSnap
+              ref={verticalSnapRef}
+              isDrawerOpen={drawerOpen}
+              onSlideChange={handleSlideChange}
+            >
+              {currentItems.map((item) => (
+                <MenuTile
+                  key={item.id}
+                  item={item}
+                />
+              ))}
+            </VerticalSnap>
+
+            {/* Fixed Card that stays in place */}
+            <FixedCard
+              item={currentItems[currentSlideIndex]}
+              language={lang}
+              swipeDirection={swipeDirection}
+            />
+          </>
         ) : (
           <div className="h-full flex items-center justify-center">
             <div className="text-center p-8">

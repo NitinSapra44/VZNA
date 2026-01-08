@@ -1,11 +1,11 @@
 "use client";
-import { useRef, useEffect, useMemo, useCallback, useState, cloneElement } from "react";
+import { useRef, useEffect, useMemo, useCallback, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Virtual, Mousewheel } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/virtual";
 
-export default function VerticalSnap({ children, isDrawerOpen }) {
+export default function VerticalSnap({ children, isDrawerOpen, onSlideChange }) {
   const swiperRef = useRef(null);
   const [swipeDirection, setSwipeDirection] = useState(0); // 1 for up, -1 for down
   const touchRef = useRef({
@@ -33,7 +33,21 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     if (swiper.wrapperEl) {
       swiper.wrapperEl.style.transitionTimingFunction = "linear";
     }
-  }, []);
+    // Initialize with first slide
+    if (onSlideChange) {
+      onSlideChange(0, 0);
+    }
+  }, [onSlideChange]);
+
+  const handleSlideChangeEvent = useCallback((swiper) => {
+    const newIndex = swiper.activeIndex;
+    const prevIndex = swiper.previousIndex;
+    const direction = newIndex > prevIndex ? 1 : -1;
+
+    if (onSlideChange) {
+      onSlideChange(newIndex, direction);
+    }
+  }, [onSlideChange]);
 
   const getEndVelocity = useCallback(() => {
     const velocities = touchRef.current.velocities;
@@ -95,11 +109,14 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
         setSwipeDirection(direction);
         swiper.slideTo(targetIndex, 150);
+        if (onSlideChange) {
+          onSlideChange(targetIndex, direction);
+        }
       } else {
         swiper.slideTo(startIndex, 150);
       }
     },
-    [slides.length, getEndVelocity]
+    [slides.length, getEndVelocity, onSlideChange]
   );
 
   return (
@@ -137,6 +154,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       preloadImages={false}
       lazy={true}
       onSwiper={handleSwiper}
+      onSlideChange={handleSlideChangeEvent}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -154,7 +172,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     className="w-full"
     style={{ height: "100vh" }}   // ✅ CRITICAL FIX
   >
-    {cloneElement(child, { swipeDirection })}
+    {child}
   </SwiperSlide>
 ))}
     </Swiper>
