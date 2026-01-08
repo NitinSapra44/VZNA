@@ -1,9 +1,16 @@
 "use client";
 import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import ProductDetail from "./ProductDetail";
+import { PlusIcon } from "lucide-react";
 
-export default function MenuTile({ item, index, language, onDrawerToggle, hideContent = false }) {
+export default function MenuTile({
+  item,
+  index,
+  language,
+  onDrawerToggle,
+  hideContent = false,
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = (e) => {
@@ -21,50 +28,74 @@ export default function MenuTile({ item, index, language, onDrawerToggle, hideCo
   const subtitle = language === "de" ? item.subtitle_de : item.subtitle_en;
 
   return (
-    <div
-      className="relative w-full h-full snap-center overflow-hidden"
-    >
-      {/* Background - must start from absolute top */}
+    <div className="relative w-full h-full">
+      {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${item.image_url})`,
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
+        style={{ backgroundImage: `url(${item.image_url})` }}
       />
 
-      {/* Text */}
+      {/* Bottom Card */}
       {!hideContent && (
-        <div className="absolute bottom-24 left-6 text-white max-w-md">
-          <h1 className="text-base mb-2" style={{ fontFamily: "var(--font-fira-sans)" }}>
-            {title}
-          </h1>
-          <p className="text-base opacity-90" style={{ fontFamily: "var(--font-fira-sans)" }}>
-            {subtitle}
-          </p>
-        </div>
-      )}
+        <div className="absolute bottom-[5px] inset-x-2.5 z-20">
+          <div className="rounded-[35px] flex bg-white shadow-lg p-5!">
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col overflow-hidden">
+              <p className="font-inter font-medium text-black/40 text-xs">Name des Gerichts</p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={title}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -30, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="font-inter mt-3  text-lg"
+                >
+                  {title}
+                </motion.p>
+              </AnimatePresence>
+              </div>
 
-      {/* Info Button */}
-      {!hideContent && !isOpen && (
-        <button
-          onClick={handleOpen}
-          className="absolute bottom-24 right-6 bg-white/95 backdrop-blur-sm text-black z-30 px-8 py-3.5 font-bold rounded-full shadow-2xl hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] active:scale-90 transition-all duration-300 hover:bg-white border-2 border-white/20"
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="tracking-wide">Information</span>
-            <span className="text-2xl font-light">+</span>
+            <div className="flex flex-col overflow-hidden">
+              <p className="font-inter font-medium text-black/40 text-xs">Preis</p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={subtitle}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -30, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="font-inter mt-3  text-lg"
+                >
+                  {subtitle}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+            </div>
+            <div className="absolute right-0 bottom-0 p-5! ">
+              <div className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-4 pl-[15px]! pr-[5px]! py-1!">
+                  <p className="font-inter font-medium">{language === "de" ? "Mehr Infos" : "More Info"}</p>
+                  <div className="p-1! rounded-full bg-black/40">
+                    <PlusIcon className="w-5 h-5" color="white"/>
+                  </div>
+                  
+
+              </div>
+              
+
+            </div>
           </div>
-        </button>
+        </div>
       )}
 
       {/* Drawer */}
       <AnimatePresence>
         {isOpen && (
-          <ProductDetail item={item} onClose={handleClose} language={language} />
+          <ProductDetail
+            item={item}
+            onClose={handleClose}
+            language={language}
+          />
         )}
       </AnimatePresence>
     </div>

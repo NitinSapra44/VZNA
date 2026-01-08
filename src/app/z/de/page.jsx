@@ -138,7 +138,7 @@ export default function MenuPage() {
                 language={lang}
                 onDrawerToggle={setDrawerOpen}
                 verticalSnapRef={verticalSnapRef}   // ✅ SEND REF HERE
-                hideContent={true}  // Hide text and button, show only slide
+                hideContent={false}  // Hide text and button, show only slide
               />
             ))}
           </VerticalSnap>

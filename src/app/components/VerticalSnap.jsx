@@ -81,42 +81,24 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const absDistance = Math.abs(totalDistance);
       const slideHeight = swiper.height || window.innerHeight;
 
-      // Direction: negative = swipe up = next slide
       const direction = totalDistance < 0 ? 1 : -1;
-
       let shouldSlide = false;
 
-      // CASE 1: Fast flick (< 300ms) with some velocity
-      if (totalTime < 300 && absVelocity > 0.2) {
-        shouldSlide = true;
-      }
-      // CASE 2: Long swipe passed 50% threshold
-      else if (absDistance > slideHeight * 0.5) {
-        shouldSlide = true;
-      }
-      // CASE 3: Long drag + flick at end (TikTok style!)
-      else if (totalTime >= 300 && absVelocity > 0.4) {
-        shouldSlide = true;
-      }
+      if (totalTime < 300 && absVelocity > 0.2) shouldSlide = true;
+      else if (absDistance > slideHeight * 0.5) shouldSlide = true;
+      else if (totalTime >= 300 && absVelocity > 0.4) shouldSlide = true;
 
       const startIndex = touchRef.current.startIndex;
       const targetIndex = startIndex + direction;
 
       if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
-        // Smooth TikTok-like transition
         swiper.slideTo(targetIndex, 150);
       } else {
-        // Smooth snap back
         swiper.slideTo(startIndex, 150);
       }
     },
     [slides.length, getEndVelocity]
   );
-
-  // Prevent Swiper's default slide decision
-  const handleSlideChangeTransitionStart = useCallback(() => {
-    // We handle transitions ourselves in handleTouchEnd
-  }, []);
 
   return (
     <Swiper
@@ -135,20 +117,17 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         releaseOnEdges: false,
         thresholdDelta: 20,
         thresholdTime: 500,
-        eventsTarget: 'container',
+        eventsTarget: "container",
       }}
       touchStartPreventDefault={true}
       passiveListeners={false}
       preventInteractionOnTransition={true}
-      // Let finger follow work
       threshold={5}
       followFinger={true}
       touchRatio={1}
       touchAngle={45}
-      // Disable Swiper's auto slide decision
       longSwipes={false}
       shortSwipes={false}
-      // Resistance at edges
       resistance={true}
       resistanceRatio={0.85}
       allowTouchMove={!isDrawerOpen}
@@ -166,11 +145,16 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
         touchAction: "pan-y",
       }}
     >
-      {slides.map((child, i) => (
-        <SwiperSlide key={i} virtualIndex={i} className="w-full h-full">
-          {child}
-        </SwiperSlide>
-      ))}
+ {slides.map((child, i) => (
+  <SwiperSlide
+    key={i}
+    virtualIndex={i}
+    className="w-full"
+    style={{ height: "100vh" }}   // ✅ CRITICAL FIX
+  >
+    {child}
+  </SwiperSlide>
+))}
     </Swiper>
   );
 }
