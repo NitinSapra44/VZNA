@@ -37,14 +37,19 @@ export default function MenuTile({
 
       {/* Bottom Card */}
       {!hideContent && (
-        <div className="absolute bottom-[5px] inset-x-2.5 z-20">
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="absolute bottom-[5px] inset-x-2.5 z-20"
+        >
           <div className="rounded-[35px] flex bg-white shadow-lg p-5!">
             <div className="flex flex-col gap-5">
               <div className="flex flex-col overflow-hidden">
               <p className="font-inter font-medium text-black/40 text-xs">Name des Gerichts</p>
               <AnimatePresence mode="wait">
                 <motion.p
-                  key={title}
+                  key={`${item.id || index}-${title}`}
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -30, opacity: 0 }}
@@ -60,7 +65,7 @@ export default function MenuTile({
               <p className="font-inter font-medium text-black/40 text-xs">Preis</p>
               <AnimatePresence mode="wait">
                 <motion.p
-                  key={subtitle}
+                  key={`${item.id || index}-${subtitle}`}
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -30, opacity: 0 }}
@@ -78,14 +83,14 @@ export default function MenuTile({
                   <div className="p-1! rounded-full bg-black/40">
                     <PlusIcon className="w-5 h-5" color="white"/>
                   </div>
-                  
+
 
               </div>
-              
+
 
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Drawer */}
