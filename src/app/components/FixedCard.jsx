@@ -34,12 +34,12 @@ export default function FixedCard({
       return {
         initial: { y: 30, opacity: 0 },
         animate: { y: 0, opacity: 1 },
-        exit: { y: -30, opacity: 0 },
+        exit: { y: -10, opacity: 0 },
       };
     } else if (swipeDirection === -1) {
       // Swiping DOWN
       return {
-        initial: { y: -30, opacity: 0 },
+        initial: { y: -10, opacity: 0 },
         animate: { y: 0, opacity: 1 },
         exit: { y: 30, opacity: 0 },
       };
@@ -57,7 +57,12 @@ export default function FixedCard({
   return (
     <>
       {/* Fixed Bottom Card */}
-      <div className="fixed bottom-[5px] inset-x-2.5 z-20 pointer-events-none">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="fixed bottom-[5px] inset-x-2.5 z-20 pointer-events-none"
+      >
         <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-none">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col overflow-hidden">
@@ -110,7 +115,7 @@ export default function FixedCard({
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Drawer */}
       <AnimatePresence>
