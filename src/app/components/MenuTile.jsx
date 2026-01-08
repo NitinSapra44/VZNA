@@ -10,6 +10,7 @@ export default function MenuTile({
   language,
   onDrawerToggle,
   hideContent = false,
+  swipeDirection = 0,
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,6 +28,35 @@ export default function MenuTile({
   const title = language === "de" ? item.title_de : item.title_en;
   const subtitle = language === "de" ? item.subtitle_de : item.subtitle_en;
 
+  // Animation variants based on swipe direction
+  // swipeDirection: 1 = swipe up (exit up, enter from bottom)
+  // swipeDirection: -1 = swipe down (exit down, enter from top)
+  const getAnimationVariants = () => {
+    if (swipeDirection === 1) {
+      // Swiping UP
+      return {
+        initial: { y: 30, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        exit: { y: -30, opacity: 0 },
+      };
+    } else if (swipeDirection === -1) {
+      // Swiping DOWN
+      return {
+        initial: { y: -30, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        exit: { y: 30, opacity: 0 },
+      };
+    }
+    // Default (first render)
+    return {
+      initial: { y: 0, opacity: 1 },
+      animate: { y: 0, opacity: 1 },
+      exit: { y: -30, opacity: 0 },
+    };
+  };
+
+  const variants = getAnimationVariants();
+
   return (
     <div className="relative w-full h-full">
       {/* Background */}
@@ -37,12 +67,7 @@ export default function MenuTile({
 
       {/* Bottom Card */}
       {!hideContent && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="absolute bottom-[5px] inset-x-2.5 z-20"
-        >
+        <div className="absolute bottom-[5px] inset-x-2.5 z-20">
           <div className="rounded-[35px] flex bg-white shadow-lg p-5!">
             <div className="flex flex-col gap-5">
               <div className="flex flex-col overflow-hidden">
@@ -50,9 +75,9 @@ export default function MenuTile({
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`${item.id || index}-${title}`}
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -30, opacity: 0 }}
+                  initial={variants.initial}
+                  animate={variants.animate}
+                  exit={variants.exit}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="font-inter mt-3  text-lg"
                 >
@@ -66,9 +91,9 @@ export default function MenuTile({
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`${item.id || index}-${subtitle}`}
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -30, opacity: 0 }}
+                  initial={variants.initial}
+                  animate={variants.animate}
+                  exit={variants.exit}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="font-inter mt-3  text-lg"
                 >
@@ -90,7 +115,7 @@ export default function MenuTile({
 
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Drawer */}

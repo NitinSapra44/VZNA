@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useMemo, useCallback } from "react";
+import { useRef, useEffect, useMemo, useCallback, useState, cloneElement } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Virtual, Mousewheel } from "swiper/modules";
 import "swiper/css";
@@ -7,6 +7,7 @@ import "swiper/css/virtual";
 
 export default function VerticalSnap({ children, isDrawerOpen }) {
   const swiperRef = useRef(null);
+  const [swipeDirection, setSwipeDirection] = useState(0); // 1 for up, -1 for down
   const touchRef = useRef({
     startY: 0,
     startTime: 0,
@@ -92,6 +93,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
       const targetIndex = startIndex + direction;
 
       if (shouldSlide && targetIndex >= 0 && targetIndex < slides.length) {
+        setSwipeDirection(direction);
         swiper.slideTo(targetIndex, 150);
       } else {
         swiper.slideTo(startIndex, 150);
@@ -152,7 +154,7 @@ export default function VerticalSnap({ children, isDrawerOpen }) {
     className="w-full"
     style={{ height: "100vh" }}   // ✅ CRITICAL FIX
   >
-    {child}
+    {cloneElement(child, { swipeDirection })}
   </SwiperSlide>
 ))}
     </Swiper>
