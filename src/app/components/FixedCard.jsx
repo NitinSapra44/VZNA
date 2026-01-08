@@ -58,7 +58,7 @@ export default function FixedCard({
     <>
       {/* Fixed Bottom Card */}
       <div className="fixed bottom-[5px] inset-x-2.5 z-20 pointer-events-none">
-        <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-auto">
+        <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-none">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col overflow-hidden">
               <p className="font-inter font-medium text-black/40 text-xs">
@@ -99,7 +99,7 @@ export default function FixedCard({
           <div className="absolute right-0 bottom-0 p-5!">
             <div
               onClick={handleOpen}
-              className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-4 pl-[15px]! pr-[5px]! py-1! cursor-pointer"
+              className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-4 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
             >
               <p className="font-inter font-medium">
                 {language === "de" ? "Mehr Infos" : "More Info"}
