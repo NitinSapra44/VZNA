@@ -104,7 +104,7 @@ export default function FixedCard({
           <div className="absolute right-0 bottom-0 p-3! ">
             <div
               onClick={handleOpen}
-              className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-4 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
+              className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-6 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
             >
               <p className="font-inter font-medium">
                 {language === "de" ? "Mehr Infos" : "More Info"}
