@@ -64,7 +64,7 @@ export default function FixedCard({
         className="fixed bottom-[5px] inset-x-2.5 z-20 pointer-events-none"
       >
         <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-none">
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-col overflow-hidden">
               <p className="font-inter font-medium text-black/40 text-xs">
                 Name des Gerichts
