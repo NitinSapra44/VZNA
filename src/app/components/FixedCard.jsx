@@ -61,7 +61,7 @@ export default function FixedCard({
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="fixed bottom-[5px] inset-x-2.5 z-20 pointer-events-none"
+        className="fixed bottom-2.5 inset-x-2.5 z-20 pointer-events-none"
       >
         <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-none">
           <div className="flex flex-col gap-2">
