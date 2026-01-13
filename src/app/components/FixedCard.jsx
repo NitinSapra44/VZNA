@@ -61,7 +61,7 @@ export default function FixedCard({
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="fixed bottom-2.5 inset-x-2.5 z-20 pointer-events-none"
+        className="fixed bottom-2.5 inset-x-2.5 z-20 pointer-events-none "
       >
         <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-none">
           <div className="flex flex-col gap-2">
@@ -82,7 +82,7 @@ export default function FixedCard({
                 </motion.p>
               </AnimatePresence>
             </div>
-
+  
             <div className="flex flex-col overflow-hidden">
               <p className="font-inter font-medium text-black/40 text-xs">
                 Preis
@@ -104,18 +104,20 @@ export default function FixedCard({
           <div className="absolute right-0 bottom-0 p-3! ">
             <div
               onClick={handleOpen}
-              className="bg-[#e5e5e5] flex flex-row items-center rounded-[25px] gap-6 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
+              className="bg-[#e5e5e5] h-[50px] max-w-44 flex flex-row items-center rounded-[25px] gap-6 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
             >
               <p className="font-inter font-medium">
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
               <div className="p-2! rounded-full bg-black/40">
-                <PlusIcon className="w-6 h-6" color="white" />
+                <PlusIcon className="w-5 h-5" color="white" />
               </div>
             </div>
           </div>
         </div>
       </motion.div>
+
+    
 
       {/* Drawer */}
       <AnimatePresence>
