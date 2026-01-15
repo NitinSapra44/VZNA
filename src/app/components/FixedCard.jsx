@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ProductDetail from "./ProductDetail";
 import { PlusIcon } from "lucide-react";
+import AppViewport from "./AppViewport";
 
 export default function FixedCard({
   item,
@@ -61,12 +62,12 @@ export default function FixedCard({
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="fixed bottom-2.5 inset-x-2.5 z-20 pointer-events-none "
+        className="absolute bottom-2.5 left-2.5 right-2.5 z-20 pointer-events-none  "
       >
-        <div className="rounded-[35px] flex bg-white shadow-lg p-5! pointer-events-none">
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col overflow-hidden">
-              <p className="font-inter font-medium text-black/40 text-xs">
+        <div className="rounded-[35px] flex bg-white shadow-lg p-5!  pointer-events-none">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col overflow-hidden gap-3">
+              <p className="font-inter font-medium leading-[9px] text-black/40 text-xs">
                 Name des Gerichts
               </p>
               <AnimatePresence mode="wait">
@@ -76,15 +77,15 @@ export default function FixedCard({
                   animate={variants.animate}
                   exit={variants.exit}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="font-inter mt-3 text-lg"
+                  className="font-inter  text-lg leading-3.5"
                 >
                   {title}
                 </motion.p>
               </AnimatePresence>
             </div>
   
-            <div className="flex flex-col overflow-hidden">
-              <p className="font-inter font-medium text-black/40 text-xs">
+            <div className="flex flex-col gap-3 overflow-hidden">
+              <p className="font-inter font-medium leading-[9px] text-black/40 text-xs">
                 Preis
               </p>
               <AnimatePresence mode="wait">
@@ -94,7 +95,7 @@ export default function FixedCard({
                   animate={variants.animate}
                   exit={variants.exit}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="font-inter mt-3 text-lg"
+                  className="font-inter text-lg leading-3.5"
                 >
                   {subtitle}
                 </motion.p>
@@ -104,9 +105,9 @@ export default function FixedCard({
           <div className="absolute right-0 bottom-0 p-3! ">
             <div
               onClick={handleOpen}
-              className="bg-[#e5e5e5] h-[50px] max-w-44 flex flex-row items-center rounded-[25px] gap-6 pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
+              className="bg-[#e5e5e5] h-[50px] w-44 flex flex-row items-center justify-between rounded-[25px]  pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
             >
-              <p className="font-inter font-medium">
+              <p className="font-inter font-medium text-lg">
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
               <div className="p-2! rounded-full bg-black/40">
