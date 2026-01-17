@@ -2,8 +2,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ProductDetail from "./ProductDetail";
-import { PlusIcon } from "lucide-react";
-import AppViewport from "./AppViewport";
+import Image from "next/image";
 
 export default function FixedCard({
   item,
@@ -66,7 +65,7 @@ export default function FixedCard({
       >
         <div className="rounded-[35px] flex bg-white shadow-lg p-5!  pointer-events-none">
           <div className="flex flex-col gap-5">
-            <div className="flex flex-col overflow-hidden gap-3">
+            <div className="flex flex-col  gap-3">
               <p className="font-inter font-medium leading-[9px] text-black/40 text-xs">
                 Name des Gerichts
               </p>
@@ -84,7 +83,7 @@ export default function FixedCard({
               </AnimatePresence>
             </div>
   
-            <div className="flex flex-col gap-3 overflow-hidden">
+            <div className="flex flex-col gap-3">
               <p className="font-inter font-medium leading-[9px] text-black/40 text-xs">
                 Preis
               </p>
@@ -107,11 +106,11 @@ export default function FixedCard({
               onClick={handleOpen}
               className="bg-[#e5e5e5] h-[50px] w-44 flex flex-row items-center justify-between rounded-[25px]  pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
             >
-              <p className="font-inter font-medium text-lg">
+             <p className="font-inter font-medium text-[18px] leading-[22px]">
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
-              <div className="w-10 h-10 items-center flex justify-center rounded-full bg-black/40">
-                <PlusIcon className="w-5 h-5 " color="white" />
+              <div className="w-10 h-10 items-center flex justify-center rounded-full bg-[#999999]">
+                <Image src="/Plus.png" alt="plus logo" height={20} width={20} />
               </div>
             </div>
           </div>
