@@ -63,10 +63,10 @@ export default function FixedCard({
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="absolute bottom-2.5 left-2.5 right-2.5 z-20 pointer-events-none  "
       >
-        <div className="rounded-[35px] flex bg-white shadow-lg p-5!  pointer-events-none">
+        <div className="rounded-[35px] flex bg-white shadow-lg p-5! w-[382px] h-[129px]  pointer-events-none">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col  gap-3">
-              <p className="font-inter font-medium leading-[9px] text-black/40 text-xs">
+              <p className="font-[family-name:var(--font-inter)] font-medium leading-[9px] text-black/40 text-xs">
                 Name des Gerichts
               </p>
               <AnimatePresence mode="wait">
@@ -76,7 +76,7 @@ export default function FixedCard({
                   animate={variants.animate}
                   exit={variants.exit}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="font-inter  text-lg leading-3.5"
+                  className="font-[family-name:var(--font-inter)]  text-lg leading-3.5"
                 >
                   {title}
                 </motion.p>
@@ -84,7 +84,7 @@ export default function FixedCard({
             </div>
   
             <div className="flex flex-col gap-3">
-              <p className="font-inter font-medium leading-[9px] text-black/40 text-xs">
+              <p className="font-[family-name:var(--font-inter)] font-medium leading-[9px] text-black/40 text-xs">
                 Preis
               </p>
               <AnimatePresence mode="wait">
@@ -94,19 +94,19 @@ export default function FixedCard({
                   animate={variants.animate}
                   exit={variants.exit}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="font-inter text-lg leading-3.5"
+                  className="font-[family-name:var(--font-inter)] text-lg leading-3.5"
                 >
                   {subtitle}
                 </motion.p>
               </AnimatePresence>
             </div>
           </div>
-          <div className="absolute right-0 bottom-0 p-3! ">
+          <div className="absolute right-0 bottom-0 p-2.5! ">
             <div
               onClick={handleOpen}
-              className="bg-[#e5e5e5] h-[50px] w-44 flex flex-row items-center justify-between rounded-[25px]  pl-[15px]! pr-[5px]! py-1! cursor-pointer pointer-events-auto"
+              className="bg-[#e5e5e5] h-[50px] w-44 flex flex-row items-center justify-between rounded-[25px]  pl-[14px]! pr-[5px]! py-[5px]! cursor-pointer pointer-events-auto"
             >
-             <p className="font-inter font-medium text-[18px] leading-[22px]">
+             <p className="font-[family-name:var(--font-inter)] font-medium text-[18px] leading-[22px]">
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
               <div className="w-10 h-10 items-center flex justify-center rounded-full bg-[#999999]">

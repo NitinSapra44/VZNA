@@ -11,6 +11,8 @@ html, body {
   width: 100%;
   overflow: auto;
   background: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .no-scrollbar::-webkit-scrollbar {
