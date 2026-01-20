@@ -63,7 +63,7 @@ export default function FixedCard({
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="absolute bottom-2.5 left-2.5 right-2.5 z-20 pointer-events-none  "
       >
-        <div className="rounded-[35px] flex bg-white shadow-lg p-5! w-[382px] h-[129px]  pointer-events-none">
+        <div className="rounded-[35px] flex bg-white shadow-lg p-5!  h-[129px]  pointer-events-none">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col  gap-3">
               <p className="font-[family-name:var(--font-inter)] font-medium leading-[9px] text-black/40 text-xs">
@@ -110,7 +110,7 @@ export default function FixedCard({
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
               <div className="w-10 h-10 items-center flex justify-center rounded-full bg-[#999999]">
-                <Image src="/Plus.png" alt="plus logo" height={20} width={20} />
+                <Image src="/plus.png" alt="plus logo" height={20} width={20} />
               </div>
             </div>
           </div>
