@@ -110,7 +110,7 @@ export default function FixedCard({
                 {language === "de" ? "Mehr Infos" : "More Info"}
               </p>
               <div className="w-10 h-10 items-center flex justify-center rounded-full bg-[#999999]">
-                <Image src="/plus.png" alt="plus logo" height={20} width={20} />
+                <Image src="/plusssss.png" alt="plus logo" height={20} width={20} />
               </div>
             </div>
           </div>
