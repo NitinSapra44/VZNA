@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono, Fira_Sans, Inter } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${firaSans.variable} ${inter.variable} antialiased`}
       >
         {children}
+        <GoogleAnalytics gaId="G-9VQXMQ2GGX" />
       </body>
     </html>
   );
